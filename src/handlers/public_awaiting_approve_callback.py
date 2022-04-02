@@ -14,7 +14,7 @@ def public_awaiting_approve_callback(update: Update, context: CallbackContext):
     if user.state == UserStates.PUBLIC_AWAITING_APPROVE_STATE:
         appeal = find_appeal(user)
         appeal.connection_type = update.callback_query.data
-
+        appeal.save()
 
         good_button = [
             InlineKeyboardButton(text="Со мной все хорошо!", callback_data="good"),

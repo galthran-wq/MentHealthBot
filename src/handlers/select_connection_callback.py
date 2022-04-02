@@ -14,6 +14,7 @@ def select_connection_callback(update: Update, context: CallbackContext):
     if user.state == UserStates.SELECT_CONNECTION_STATE:
         appeal = find_appeal(user)
         appeal.language = update.callback_query.data
+        appeal.save()
 
         connection_type_button = [
             InlineKeyboardButton(text="Личное (очное) общение", callback_data="personal"),

@@ -9,4 +9,3 @@ class UserStates:
     SELECT_CONNECTION_STATE = "SelectConnectionState"
     PUBLIC_AWAITING_APPROVE_STATE = "PublicAwaitingApproveState"
     FINISH_CONVERSATION_STATE = "FinishConversationState"
-
