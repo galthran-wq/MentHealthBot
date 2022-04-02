@@ -26,5 +26,6 @@ class Appeal(BaseModel):
             problems=[]
         )
 
+
     class Meta:
         table_name = "appeal"
