@@ -1,6 +1,6 @@
 class UserStates:
     AUTHORIZE_STATE = "AuthorizeState"
+    AWAITING_AUTHORIZATION_STATE = "AwaitingAuthorizationState"
     START_STATE = "StartState"
-    HOW_ARE_YOU = "how_are_you"
-    WHAT_IS_YOUR_NAME = "what_is_your_name"
-    FINAL = "finish"
+    SELECT_PROBLEM_STATE = "SelectProblemState"
+    DOCTOR_MENU_STATE = "DoctorMenuState"

@@ -1,1 +1,3 @@
 from .welcome_message import WELCOME_MESSAGE
+from .welcome_doctor_message import WELCOME_DOCTOR_MESSAGE
+from .welcome_patient_message import WELCOME_PATIENT_MESSAGE

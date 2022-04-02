@@ -1,33 +1,24 @@
-from peewee import Node
-from models import User
 from telegram.ext import CallbackContext
+from utils.find_or_create_user import find_or_create_user
+from .message_templates import WELCOME_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
-def user_by_telegram_id_query(incoming_id: int) -> Node:
-    return User.select().where(User.telegram_id == incoming_id)
+from states import UserStates
 
 def user_welcome_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
-
-    if user_by_telegram_id_query(telegram_user.id).exists():
-        user = user_by_telegram_id_query(telegram_user.id).get()
-    else:
-        user = User.from_telegram_user(telegram_user)
-        user.save()
-
+    user = find_or_create_user(telegram_user)
     auth_button = InlineKeyboardButton(
-        text="Авторизоваться (обман)",
-        callback_data="fake_auth"
+        text="Авторизоваться (ссылка)", callback_data="auth_button"
     )
-    help_button = InlineKeyboardButton(
-        text="Помогите...",
-        callback_data="help_me"
-    )
+    kb = InlineKeyboardMarkup([[auth_button]])
 
-    kb = InlineKeyboardMarkup([[auth_button], [help_button]])
-
-    msg = context.bot.send_message(
+    context.bot.send_message(
         chat_id=telegram_user.id,
-        text="Приветствую тебя в боте помощи психологам! Бла-бла-бла",
+        text=WELCOME_MESSAGE,
         reply_markup=kb
     )
+
+    user.state = UserStates.AWAITING_AUTHORIZATION_STATE
+    user.save()
+
