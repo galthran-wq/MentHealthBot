@@ -14,6 +14,7 @@ class Appeal(BaseModel):
     )
     created_at = DateTimeTZField(index=True, default=now)
     connection_type = CharField(null=False, max_length=100)
+    language = CharField(null=False, max_length=100)
     is_taken = BooleanField(default=False)
 
     class Meta:
