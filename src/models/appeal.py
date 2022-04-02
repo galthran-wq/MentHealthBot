@@ -7,12 +7,10 @@ from playhouse.postgres_ext import (
 
 class Appeal(BaseModel):
     patient = ForeignKeyField(
-        backref="appeals", column_name="user_id",
-        field="id", model=User, null=False
+        backref="appeals", column_name="patient_id", model=User, null=False
     )
     therapist = ForeignKeyField(
-        backref="appeals", column_name="user_id",
-        field="id", model=User, null=True
+        backref="appeals", column_name="therapist_id", model=User, null=True
     )
     created_at = DateTimeTZField(index=True, default=now)
     connection_type = CharField(null=False, max_length=100)

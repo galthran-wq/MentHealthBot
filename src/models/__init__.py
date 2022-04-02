@@ -4,4 +4,5 @@ from .message import Message
 from .base_model import db_client
 import peeweedbevolve
 
-db_client.evolve()
+db_client.create_tables([User, Appeal, Message])
+# db_client.evolve()

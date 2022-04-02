@@ -1,12 +1,14 @@
+from telegram import Message
 from telegram.ext import MessageFilter
-from models.models import User
+from models import User
+from states import UserStates
 
 
 class StateFilter(MessageFilter):
-    def __init__(self, state: str):
+    def __init__(self, state: UserStates):
         self.state = state
 
-    def filter(self, message):
+    def filter(self, message: Message) -> bool:
         if (user := User.select().where(User.telegram_id == message.from_user.id)).exists():
             user = user.get()
             return user.state == self.state

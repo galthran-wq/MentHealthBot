@@ -35,4 +35,4 @@ class User(BaseModel):
         )
 
     class Meta:
-        table_name = "user"
+        table_name = "bot_user"

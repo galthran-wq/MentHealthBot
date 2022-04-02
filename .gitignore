@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# IDE stuff
+*.vscode
+*.idea
+
+# Tokens and other stuff
+*token.json
+*config.yaml
+*creds.json
+*creds.yaml
