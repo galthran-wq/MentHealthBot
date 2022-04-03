@@ -3,7 +3,7 @@ from .user import User
 from .datetime_utils import now
 from .base_model import BaseModel
 from playhouse.postgres_ext import (
-    ForeignKeyField, CharField, DateTimeTZField, ArrayField, BooleanField
+    ForeignKeyField, CharField, BooleanField, DateTimeTZField, ArrayField
 )
 
 
