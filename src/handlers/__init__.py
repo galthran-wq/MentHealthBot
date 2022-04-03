@@ -7,14 +7,5 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
 
 HANDLERS = [
     CommandHandler("start", user_welcome_callback),
-    MessageHandler(
-        StateFilter(UserStates.AWAITING_AUTHORIZATION_STATE),
-        check_authorization_callback
-    ),
-    MessageHandler(
-        StateFilter(UserStates.DOCTOR_MENU_STATE), authorized_user_callback
-    ),
-    MessageHandler(
-        StateFilter(UserStates.SELECT_PROBLEM_STATE), authorized_user_callback
-    )
+    CallbackQueryHandler("auth_succesfull", authorized_user_callback),
 ]

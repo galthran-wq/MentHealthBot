@@ -1,0 +1,13 @@
+fastapi:
+  debug: true
+  port: 9097
+
+db:
+  HOST: 'localhost'
+  PORT: 5432
+  USER: mental_user
+  PASSWORD: password
+  DATABASE_NAME: mental_db
+
+telegram:
+  token: token
