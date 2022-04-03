@@ -9,3 +9,19 @@ services:
       POSTGRES_PASSWORD: "password"
     ports:
       - "5432:5432"
+
+  bot:
+    image: azlymoon/mental_bot:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    links:
+      - "postgres:postgres"
+    depends_on:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+  bot:
+    driver: bridge
