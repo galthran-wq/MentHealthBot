@@ -10,17 +10,21 @@ def user_selection_language_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_or_create_user(telegram_user)
 
-    # if user.state == UserStates.SELECT_CONNECTION_STATE:
-    language_buttons = [InlineKeyboardButton(text="Русский", callback_data="russia"),
-                        InlineKeyboardButton(text="Английский", callback_data="english")]
+    if user.state == UserStates.LANGUAGE_SELECTION_STATE:
+        telegram_user = update.effective_user
+        user = find_or_create_user(telegram_user)
 
-    kb = InlineKeyboardMarkup([[*language_buttons]])
+        # if user.state == UserStates.SELECT_CONNECTION_STATE:
+        language_buttons = [InlineKeyboardButton(text="Русский", callback_data="russia"),
+                            InlineKeyboardButton(text="Английский", callback_data="english")]
 
-    context.bot.send_message(
-        chat_id=telegram_user.id,
-        text=USER_SELECTION_LANGUAGE_MESSAGE,
-        reply_markup=kb
-    )
+        kb = InlineKeyboardMarkup([[*language_buttons]])
 
-    user.state = UserStates.SELECT_CONNECTION_STATE
-    user.save()
+        context.bot.send_message(
+            chat_id=telegram_user.id,
+            text=USER_SELECTION_LANGUAGE_MESSAGE,
+            reply_markup=kb
+        )
+
+        user.state = UserStates.SELECT_CONNECTION_STATE
+        user.save()

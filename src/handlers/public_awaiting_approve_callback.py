@@ -1,5 +1,6 @@
 from telegram.ext import CallbackContext
 from utils.find_or_create_user import find_or_create_user
+from utils.find_appeal import find_appeal
 from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
@@ -11,7 +12,9 @@ def public_awaiting_approve_callback(update: Update, context: CallbackContext):
     user = find_or_create_user(telegram_user)
 
     if user.state == UserStates.PUBLIC_AWAITING_APPROVE_STATE:
-        print(update.callback_query.data)  # ToDo: Save to DB
+        appeal = find_appeal(user)
+        appeal.connection_type = update.callback_query.data
+
 
         good_button = [
             InlineKeyboardButton(text="Со мной все хорошо!", callback_data="good"),
