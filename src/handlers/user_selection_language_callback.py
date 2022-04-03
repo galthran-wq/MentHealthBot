@@ -10,7 +10,7 @@ def user_selection_language_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_or_create_user(telegram_user)
 
-    if user.state == UserStates.USER_SELECTION_LANGUAGE_MESSAGE:
+    if user.state == UserStates.LANGUAGE_SELECTION_STATE:
         telegram_user = update.effective_user
         user = find_or_create_user(telegram_user)
 

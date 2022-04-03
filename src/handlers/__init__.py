@@ -17,7 +17,8 @@ HANDLERS = [
     CallbackQueryHandler("auth_succesfull", authorized_user_callback),
     MessageHandler(
         StateFilter(UserStates.AWAITING_AUTHORIZATION_STATE),
-        check_authorization_callback
+        # check_authorization_callback
+        user_selection_language_callback
     ),
 
     CallbackQueryHandler(select_connection_callback, pattern="russia"),
