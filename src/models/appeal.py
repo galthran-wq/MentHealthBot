@@ -20,10 +20,9 @@ class Appeal(BaseModel):
     problems = ArrayField(CharField)
     active = BooleanField(default=True)
 
-    @staticmethod
-    def new_appeal(telegram_user: TelegramUser) -> 'Appeal':
+    def from_telegram_user(user: TelegramUser) -> 'Appeal':
         return Appeal(
-            patient=telegram_user.id,
+            patient=user.id,
             problems=[]
         )
 
