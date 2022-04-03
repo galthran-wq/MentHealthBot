@@ -1,5 +1,5 @@
 from telegram.ext import CallbackContext
-from utils.find_or_create_user import find_or_create_user
+from utils.find_user import find_user
 from .message_templates import USER_SELECTION_LANGUAGE_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
@@ -8,13 +8,11 @@ from states import UserStates
 
 def user_selection_language_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
-    user = find_or_create_user(telegram_user)
+    user = find_user(telegram_user)
+    if user.state == UserStates.SELECT_PROBLEM_STATE:
+        user.state = UserStates.LANGUAGE_SELECTION_STATE
 
     if user.state == UserStates.LANGUAGE_SELECTION_STATE:
-        telegram_user = update.effective_user
-        user = find_or_create_user(telegram_user)
-
-        # if user.state == UserStates.SELECT_CONNECTION_STATE:
         language_buttons = [InlineKeyboardButton(text="Русский", callback_data="russia"),
                             InlineKeyboardButton(text="Английский", callback_data="english")]
 
