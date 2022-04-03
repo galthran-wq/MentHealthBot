@@ -1,6 +1,9 @@
 from telegram.ext import CallbackContext
 from utils.find_or_create_user import find_or_create_user
+<<<<<<< HEAD
 from utils.find_appeal import find_appeal
+=======
+>>>>>>> d60ceda151325ce02ca69286feca0aec8fc2631c
 from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
