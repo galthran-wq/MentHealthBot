@@ -5,6 +5,7 @@ from states import UserStates
 from utils.find_or_create_user import find_or_create_user
 
 def add_custom_problem_callback(update: Update, context: CallbackContext):
+    #todo: this function is undone 
     telegram_user = update.effective_user
     user = find_or_create_user(telegram_user)
 
@@ -19,5 +20,3 @@ def add_custom_problem_callback(update: Update, context: CallbackContext):
         text=ADD_CUSTOM_PROBLEM_MESSAGE,
         reply_markup=kb
     )
-
-    #todo обработка сообщения от пользователя
