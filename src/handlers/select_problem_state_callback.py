@@ -1,28 +1,53 @@
+from subprocess import call
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
+from utils.find_appeal import find_appeal
 from .message_templates.select_problem_message import SELECT_PROBLEM_MESSAGE
 from states import UserStates
-from utils.find_or_create_user import find_or_create_user
+from utils.find_user import find_user
+from utils.create_appeal import create_appeal
 
-problems = {"tired_problem_button": ["Выгорание и переутомление", False],
-            "depressive_problem_button": ["Депрессивные состояния", False],
-            "self_problem_button": ["Личные отношения", False],
-            "kin_problem_button": ["Проблемы с родственниками", False],
-            "surround_problem_button": ["Конфликты с окружающими", False],
-            "nutrition_problem_button": ["Расстройства пищевого поведения", False],
-            "adaptation_problem_button": ["Проблемы адаптации", False],
-            "LGBT_problem_button": ["Проблемы LGBT+ community", False],
-            "anxiety_problem_button": ["Тревожность", False]}
+
+class Problem():
+    def __init__(self, name, button):
+        self.name = name
+        self.button = button
+        self.short = button.split("_")[0]
+
+
+class Problems():
+    TIRED = Problem("Выгорание и переутомление", "tired_problem_button")
+    DEPRESSIVE = Problem("Депрессивные состояния", "depressive_problem_button")
+    SELF = Problem("Личные отношения", "self_problem_button")
+    KIN = Problem("Проблемы с родственниками", "kin_problem_button")
+    SURROUND = Problem("Конфликты с окружающими", "surround_problem_button")
+    NUTRITION = Problem("Расстройства пищевого поведения",
+                        "nutrition_problem_button")
+    ADAPTATION = Problem("Проблемы адаптации", "adaptation_problem_button")
+    LGBT = Problem("Проблемы LGBT+ community", "LGBT_problem_button")
+    ANXIETY = Problem("Тревожность", "anxiety_problem_button")
+
+    def list(self):
+        return [self.TIRED,
+                self.DEPRESSIVE,
+                self.SELF,
+                self.KIN,
+                self.SURROUND,
+                self.NUTRITION,
+                self.ADAPTATION,
+                self.LGBT,
+                self.ANXIETY]
 
 
 def select_problem_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
-    user = find_or_create_user(telegram_user)
+    user = find_user(telegram_user)
+    create_appeal(user)
 
-    buttons = [InlineKeyboardButton(text="⬛ "+m[0], callback_data=btn)
-               for btn, m in zip(problems.keys(), problems.values())]
-    buttons.append(InlineKeyboardButton(
-        text="Добавить свою", callback_data="add_custom_problem"))
+    buttons = [InlineKeyboardButton(text="⬛ "+m.name, callback_data=m.button)
+               for m in Problems().list()]
+    # buttons.append(InlineKeyboardButton(
+    #     text="Добавить свою", callback_data="add_custom_problem"))
     kb = InlineKeyboardMarkup([[btn] for btn in buttons])
 
     context.bot.send_message(
@@ -35,15 +60,22 @@ def select_problem_callback(update: Update, context: CallbackContext):
 
 def change_problem_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
-    user = find_or_create_user(telegram_user)
+    user = find_user(telegram_user)
+    appeal = find_appeal(user)
     callback = update.callback_query.data
-    global problems
-    problems[callback][1] = not problems[callback][1]
-    buttons = [InlineKeyboardButton(text=("☑️ " if m[1] else "⬛ ")+m[0], callback_data=btn)
-            for btn, m in zip(problems.keys(), problems.values())]
-    buttons.append(InlineKeyboardButton(
-        text="Добавить свою", callback_data="add_custom_problem"))
-    if sum(m[1] for m in problems.values()) != 0:
+    problem = callback.split("_")[0]
+    if problem in appeal.problems:
+        appeal.problems.remove(problem)
+    else:
+        appeal.problems.append(problem)
+    appeal.save()
+    buttons = [InlineKeyboardButton(
+                text=("☑️ " if m.short in appeal.problems else "⬛ ")+m.name,
+                callback_data=m.button
+               ) for m in Problems().list()]
+    # buttons.append(InlineKeyboardButton(
+    #     text="Добавить свою", callback_data="add_custom_problem"))
+    if len(appeal.problems) != 0:
         buttons.append(InlineKeyboardButton(
             text="На следующий шаг", callback_data="done_selecting_problems_button"))
 
@@ -51,8 +83,8 @@ def change_problem_callback(update: Update, context: CallbackContext):
     update.callback_query.edit_message_reply_markup(kb)
 
 
-def finish_problem_selecting_callback(update: Update, context: CallbackContext):
-    #todo записать проблемы в БД
-    #todo перейти на следующий стейт
-    pass
-       
+def done_problem_selecting_callback(update: Update, context: CallbackContext):
+    telegram_user = update.effective_user
+    user = find_user(telegram_user)
+    user.state = UserStates.LANGIAGE_SELECTION_STATE
+    user.save()
