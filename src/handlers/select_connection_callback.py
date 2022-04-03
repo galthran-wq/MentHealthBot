@@ -1,5 +1,6 @@
 from telegram.ext import CallbackContext
 from utils.find_or_create_user import find_or_create_user
+from utils.find_appeal import find_appeal
 from .message_templates import SELECT_CONNECTION_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
@@ -11,7 +12,8 @@ def select_connection_callback(update: Update, context: CallbackContext):
     user = find_or_create_user(telegram_user)
 
     if user.state == UserStates.SELECT_CONNECTION_STATE:
-        print(update.callback_query.data)  # ToDo: Save to DB
+        appeal = find_appeal(user)
+        appeal.language = update.callback_query.data
 
         connection_type_button = [
             InlineKeyboardButton(text="Личное (очное) общение", callback_data="personal"),
