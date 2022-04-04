@@ -23,7 +23,7 @@ def authorized_user_callback(update: Update, context: CallbackContext):
             user.first_name, user.last_name, user.hse_mail
         )
         user.state = User.state = UserStates.SELECT_PROBLEM_STATE
-
+    user.save()
     next_button = InlineKeyboardButton(
         text="Далее",
         callback_data=callback_query
