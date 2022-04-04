@@ -10,24 +10,32 @@ from states import UserStates
 def select_connection_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    if user.state == UserStates.SELECT_CONNECTION_STATE:
-        appeal = find_appeal(user)
-        appeal.language = update.callback_query.data
-        appeal.save()
+    try:
+        if user.state != UserStates.SELECT_CONNECTION_STATE:
+            return "StateError"
+        else:
+            appeal = find_appeal(user)
+            try:
+                appeal.language = update.callback_query.data
+                appeal.save()
+            except AttributeError:
+                print("AppealError")
 
-        connection_type_button = [
-            InlineKeyboardButton(text="Личное (очное) общение", callback_data="personal"),
-            InlineKeyboardButton(text="Онлайн-общение (Zoom/Skype)", callback_data="online"),
-            InlineKeyboardButton(text="Переписка", callback_data="chat")
-        ]
+            connection_type_button = [
+                InlineKeyboardButton(text="Личное (очное) общение", callback_data="personal"),
+                InlineKeyboardButton(text="Онлайн-общение (Zoom/Skype)", callback_data="online"),
+                InlineKeyboardButton(text="Переписка", callback_data="chat")
+            ]
 
-        kb = InlineKeyboardMarkup([[button] for button in connection_type_button])
+            kb = InlineKeyboardMarkup([[button] for button in connection_type_button])
 
-        context.bot.send_message(
-            chat_id=telegram_user.id,
-            text=SELECT_CONNECTION_MESSAGE,
-            reply_markup=kb
-        )
+            context.bot.send_message(
+                chat_id=telegram_user.id,
+                text=SELECT_CONNECTION_MESSAGE,
+                reply_markup=kb
+            )
 
-        user.state = UserStates.PUBLIC_AWAITING_APPROVE_STATE
-        user.save()
+            user.state = UserStates.PUBLIC_AWAITING_APPROVE_STATE
+            user.save()
+    except AttributeError:
+        print("UserError")
