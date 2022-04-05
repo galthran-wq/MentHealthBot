@@ -14,36 +14,58 @@ from .finish_conversation_callback import finish_conversation_callback
 from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
 
 HANDLERS = [
-    CommandHandler("start", select_problem_callback),
+    CommandHandler(
+        "start", 
+        select_problem_callback
+    ),
 
-    CallbackQueryHandler(authorized_user_callback, pattern="auth_succesfull"),
+    #todo: change name of the button after @olex1313 will set up authorization server
+    CallbackQueryHandler(
+        authorized_user_callback, 
+        pattern="auth_succesfull"
+    ),
+    
     MessageHandler(
         StateFilter(UserStates.AWAITING_AUTHORIZATION_STATE),
         authorized_user_callback
     ),
 
-    CallbackQueryHandler(select_connection_callback, pattern="russia"),
-    CallbackQueryHandler(select_connection_callback, pattern="english"),
-
-    CallbackQueryHandler(public_awaiting_approve_callback, pattern="personal"),
-    CallbackQueryHandler(public_awaiting_approve_callback, pattern="online"),
-    CallbackQueryHandler(public_awaiting_approve_callback, pattern="chat"),
+    CallbackQueryHandler(
+        select_connection_callback, 
+        pattern=r"set_.+_lang_button"
+    ),
+    
+    CallbackQueryHandler(
+        public_awaiting_approve_callback, 
+        pattern=r".+_connection_type_button"
+    ),
 
     # ToDo: If the user don't click to good_button???
-    CallbackQueryHandler(finish_conversation_callback, pattern="good"),
+    CallbackQueryHandler(
+        finish_conversation_callback, 
+        pattern=r"^cancel_appeal_button$"
+    ),
 
-    CallbackQueryHandler(select_problem_callback, pattern="problem_button"),
-    CallbackQueryHandler(select_problem_callback, pattern="share_problem"),
+    # user can reach this step with two ways: when he/she registers in the bot 
+    # and when he/she wants to share the problem again
+    CallbackQueryHandler(
+        select_problem_callback, 
+        pattern=r"^create_appeal_button$"
+    ),
 
     MessageHandler(
-        StateFilter(UserStates.DOCTOR_MENU_STATE), authorized_user_callback
+        StateFilter(UserStates.DOCTOR_MENU_STATE), 
+        authorized_user_callback
     ),
+    
     MessageHandler(
-        StateFilter(UserStates.SELECT_PROBLEM_STATE), authorized_user_callback
+        StateFilter(UserStates.SELECT_PROBLEM_STATE), 
+        authorized_user_callback
     ),
+
     CallbackQueryHandler(
         change_problem_callback,
-        pattern=r".*_problem_button$"
+        pattern=r".+_problem_button$"
     ),
 
     CallbackQueryHandler(

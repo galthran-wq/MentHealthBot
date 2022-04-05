@@ -18,7 +18,7 @@ def authorized_user_callback(update: Update, context: CallbackContext):
         )
         user.state = UserStates.DOCTOR_MENU_STATE
     else:
-        callback_query = "problem_button"
+        callback_query = "create_appeal_button"
         message = WELCOME_PATIENT_MESSAGE.format(
             user.first_name, user.last_name, user.hse_mail
         )

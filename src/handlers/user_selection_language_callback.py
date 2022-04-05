@@ -15,8 +15,8 @@ def user_selection_language_callback(update: Update, context: CallbackContext):
             user.state = UserStates.LANGUAGE_SELECTION_STATE
         print(user.state)
         if user.state == UserStates.LANGUAGE_SELECTION_STATE:
-            language_buttons = [InlineKeyboardButton(text="Русский", callback_data="russia"),
-                                InlineKeyboardButton(text="Английский", callback_data="english")]
+            language_buttons = [InlineKeyboardButton(text="Русский", callback_data="set_russian_lang_button"),
+                                InlineKeyboardButton(text="Английский", callback_data="set_english_lang_button")]
 
             kb = InlineKeyboardMarkup([[*language_buttons]])
 

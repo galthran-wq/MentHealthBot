@@ -22,9 +22,9 @@ def select_connection_callback(update: Update, context: CallbackContext):
                 print("AppealError")
 
             connection_type_button = [
-                InlineKeyboardButton(text="Личное (очное) общение", callback_data="personal"),
-                InlineKeyboardButton(text="Онлайн-общение (Zoom/Skype)", callback_data="online"),
-                InlineKeyboardButton(text="Переписка", callback_data="chat")
+                InlineKeyboardButton(text="Личное (очное) общение", callback_data="personal_connection_type_button"),
+                InlineKeyboardButton(text="Онлайн-общение (Zoom/Skype)", callback_data="online_connection_type_button"),
+                InlineKeyboardButton(text="Переписка", callback_data="chat_connection_type_button")
             ]
 
             kb = InlineKeyboardMarkup([[button] for button in connection_type_button])

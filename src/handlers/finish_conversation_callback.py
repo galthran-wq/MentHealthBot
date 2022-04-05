@@ -15,7 +15,7 @@ def finish_conversation_callback(update: Update, context: CallbackContext):
             print("StateError")
         else:
             share_problem_buttons = [
-                InlineKeyboardButton(text="Поделиться проблемой", callback_data="share_problem"),
+                InlineKeyboardButton(text="Поделиться проблемой", callback_data="create_appeal_button"),
             ]
             kb = InlineKeyboardMarkup([[*share_problem_buttons]])
 

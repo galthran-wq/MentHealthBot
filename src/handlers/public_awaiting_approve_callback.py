@@ -22,7 +22,7 @@ def public_awaiting_approve_callback(update: Update, context: CallbackContext):
                 print("AppealError")
 
             good_button = [
-                InlineKeyboardButton(text="Со мной все хорошо!", callback_data="good"),
+                InlineKeyboardButton(text="Со мной все хорошо!", callback_data="cancel_appeal_button"),
             ]
 
             kb = InlineKeyboardMarkup([[*good_button]])
