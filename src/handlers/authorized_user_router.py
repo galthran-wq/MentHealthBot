@@ -8,6 +8,7 @@ from handlers.message_templates.welcome_doctor_message import \
     WELCOME_DOCTOR_MESSAGE
 from handlers.message_templates.welcome_patient_message import \
     WELCOME_PATIENT_MESSAGE
+from utils.update_user_state import update_user_state
 
 
 def authorized_user_router(update: Update, context: CallbackContext):
@@ -19,14 +20,13 @@ def authorized_user_router(update: Update, context: CallbackContext):
         message = WELCOME_DOCTOR_MESSAGE.format(
             user.first_name, user.last_name
         )
-        user.state = UserStates.DOCTOR_MENU_STATE
+        update_user_state(user, UserStates.DOCTOR_MENU_STATE)
     else:
         callback_query = "create_appeal_button"
         message = WELCOME_PATIENT_MESSAGE.format(
             user.first_name, user.last_name, user.hse_mail
         )
-        user.state = User.state = UserStates.SELECT_PROBLEM_STATE
-    user.save()
+        update_user_state(user, UserStates.SELECT_PROBLEM_STATE)
     next_button = InlineKeyboardButton(
         text="Далее",
         callback_data=callback_query
