@@ -1,7 +1,7 @@
 
 from telegram import User
 from models import User as BotUser
-from .user_by_telegram_id_query import user_by_telegram_id_query
+from .find_user_by_telegram_id_query import user_by_telegram_id_query
 
 
 def find_or_create_user(telegram_user: User) -> BotUser:

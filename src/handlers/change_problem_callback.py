@@ -1,6 +1,6 @@
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from utils.find_appeal import find_appeal
+from utils.find_appeal_by_user_id import find_appeal_by_user_id
 from utils.find_user import find_user
 from models.problems import Problems, Problem
 
@@ -23,7 +23,7 @@ def get_problem_keyboard(user_problems: list) -> InlineKeyboardMarkup:
 def change_problem_callback(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    appeal = find_appeal(user)
+    appeal = find_appeal_by_user_id(user)
     callback = update.callback_query.data
     problem = callback.split("_")[0]
     if problem in appeal.problems:

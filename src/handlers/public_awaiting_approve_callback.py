@@ -1,6 +1,6 @@
 from telegram.ext import CallbackContext
 from utils.find_user import find_user
-from utils.find_appeal import find_appeal
+from utils.find_appeal_by_user_id import find_appeal_by_user_id
 from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
@@ -14,9 +14,9 @@ def public_awaiting_approve_callback(update: Update, context: CallbackContext):
         if user.state != UserStates.PUBLIC_AWAITING_APPROVE_STATE:
             print("StateError")
         else:
-            appeal = find_appeal(user)
+            appeal = find_appeal_by_user_id(user)
             try:
-                appeal.connection_type = update.callback_query.data
+                appeal.connection_type = update.callback_query.data.split("_")[0]
                 appeal.save()
             except AttributeError:
                 print("AppealError")

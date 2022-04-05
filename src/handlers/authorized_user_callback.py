@@ -12,7 +12,7 @@ def authorized_user_callback(update: Update, context: CallbackContext):
     user = find_or_create_user(telegram_user)
 
     if user.therapist:
-        callback_query = ""
+        callback_query = "doctor_menu_button"
         message = WELCOME_DOCTOR_MESSAGE.format(
             user.first_name, user.last_name
         )
