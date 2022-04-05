@@ -2,83 +2,81 @@ from filters.state_filter import StateFilter
 from states import UserStates
 from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler
 
-from handlers.doctor_menu_state import doctor_menu_callback
-
-from .authorized_user_callback import authorized_user_callback
-from .change_problem_callback import change_problem_callback
-from .check_authorization_callback import check_authorization_callback
-from .doctor_examine_apeal_state import doctor_examine_appeal
-from .doctor_menu_state import doctor_menu_callback
-from .doctor_select_appeal_state import doctor_select_appeal
-from .finish_conversation_callback import finish_conversation_callback
-from .public_awaiting_approve_callback import public_awaiting_approve_callback
-from .select_connection_callback import select_connection_callback
-from .select_problem_state_callback import select_problem_callback
-from .user_selection_language_callback import user_selection_language_callback
-from .user_welcome_callback import user_welcome_callback
+from .all_welcome import all_welcome
+from .authorized_user_router import authorized_user_router
+from .check_authorization import check_authorization
+from .doctor_examine_apeal import doctor_examine_appeal
+from .doctor_menu import doctor_menu
+from .doctor_select_appeal import doctor_select_appeal
+from .user_change_problem import user_change_problem
+from .user_finish_conversation import user_finish_conversation
+from .user_public_awaiting_approve import user_public_awaiting_approve
+from .user_select_connection import user_select_connection
+from .user_select_problem_state import user_select_problem
+from .user_selection_language import user_select_language
 
 HANDLERS = [
     CommandHandler(
         "start",
-        user_welcome_callback
+        all_welcome
     ),
 
     # todo: change name of the button after @olex1313 will set up authorization server
     CallbackQueryHandler(
-        authorized_user_callback,
+        authorized_user_router,
         pattern="auth_succesfull"
     ),
 
     MessageHandler(
         StateFilter(UserStates.AWAITING_AUTHORIZATION_STATE),
-        authorized_user_callback
+        authorized_user_router
     ),
 
     MessageHandler(
         StateFilter(UserStates.DOCTOR_MENU_STATE),
-        authorized_user_callback
+        authorized_user_router
     ),
 
     MessageHandler(
         StateFilter(UserStates.SELECT_PROBLEM_STATE),
-        authorized_user_callback
+        authorized_user_router
     ),
 
     # user can reach this step with two ways: when he/she registers in the bot
     # and when he/she wants to share the problem again
     CallbackQueryHandler(
-        select_problem_callback,
+        user_select_problem,
         pattern=r"^create_appeal_button$"
     ),
 
     CallbackQueryHandler(
-        change_problem_callback,
+        user_change_problem,
         pattern=r".+_problem_button$"
     ),
 
     CallbackQueryHandler(
-        user_selection_language_callback,
+        user_select_language,
         pattern=r"^done_selecting_problems_button$"
     ),
 
     CallbackQueryHandler(
-        select_connection_callback,
+        user_select_connection,
         pattern=r"set_.+_lang_button"
     ),
 
     CallbackQueryHandler(
-        public_awaiting_approve_callback,
+        user_public_awaiting_approve,
         pattern=r".+_connection_type_button"
     ),
 
-    # ToDo: If the user don't click to good_button???
+    # ToDo: If the user don't click to cancel_appeal_button???
     CallbackQueryHandler(
-        finish_conversation_callback,
+        user_finish_conversation,
         pattern=r"^cancel_appeal_button$"
     ),
 
     CallbackQueryHandler(
-        doctor_menu_callback,
+        doctor_menu,
         pattern=r"^doctor_menu_button$"
     ),
 

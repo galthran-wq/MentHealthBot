@@ -1,11 +1,9 @@
-from telegram.ext import CallbackContext
-from utils.find_user import find_user
-from .message_templates import WELCOME_MESSAGE
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import CallbackContext
+from .message_templates import WELCOME_MESSAGE
 
-from states import UserStates
 
-def user_welcome_callback(update: Update, context: CallbackContext):
+def all_welcome(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     auth_button = InlineKeyboardButton(
         text="Авторизоваться (ссылка)", callback_data="auth_button",

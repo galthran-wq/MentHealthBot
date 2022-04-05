@@ -4,7 +4,8 @@ from utils.find_appeals_by_doctor_id import find_appeals_by_doctor_id
 from utils.find_user import find_user
 from utils.get_new_appeals import get_new_appeals
 
-def doctor_menu_callback(update: Update, context: CallbackContext):
+
+def doctor_menu(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
 
@@ -14,10 +15,6 @@ def doctor_menu_callback(update: Update, context: CallbackContext):
     buttons = [InlineKeyboardButton(
                 text=f"Новые заявки ({new_appeals})",
                 callback_data="new_appeals_menu_button"
-               ),
-               InlineKeyboardButton(
-                text=f"🚧 Анонимные заявки ({doctor_appeals}) [пока не работает] 🚧",
-                callback_data="doctor_appeals_menu_button"
                )]
     kb = InlineKeyboardMarkup([[btn] for btn in buttons])
 

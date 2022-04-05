@@ -1,13 +1,13 @@
-from telegram.ext import CallbackContext
-from utils.find_user import find_user
-from utils.find_appeal_by_user_id import find_appeal_by_user_id
-from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-
 from states import UserStates
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import CallbackContext
+from utils.find_appeal_by_user_id import find_appeal_by_user_id
+from utils.find_user import find_user
+
+from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 
 
-def public_awaiting_approve_callback(update: Update, context: CallbackContext):
+def user_public_awaiting_approve(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     try:

@@ -7,14 +7,15 @@ from utils.get_new_appeals import get_new_appeals
 def make_keyboard():
     new_appeals = get_new_appeals()
     buttons = [
-        InlineKeyboardButton(text=appeal[0], 
-                             callback_data=f"get_appeal_{appeal[1]}_button") 
+        InlineKeyboardButton(text=appeal[0],
+                             callback_data=f"get_appeal_{appeal[1]}_button")
         for appeal in new_appeals
     ]
-    buttons.append(InlineKeyboardButton(text="В главное меню", 
+    buttons.append(InlineKeyboardButton(text="В главное меню",
                                         callback_data="doctor_menu_button"))
     kb = InlineKeyboardMarkup([[btn] for btn in buttons])
     return kb
+
 
 def doctor_select_appeal(update: Update, context: CallbackContext):
     telegram_user = update.effective_user

@@ -1,13 +1,16 @@
-
-from telegram.ext import CallbackContext
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from handlers.message_templates.welcome_doctor_message import WELCOME_DOCTOR_MESSAGE
-from handlers.message_templates.welcome_patient_message import WELCOME_PATIENT_MESSAGE
 from models.user import User
 from states import UserStates
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import CallbackContext
 from utils.find_or_create_user import find_or_create_user
 
-def authorized_user_callback(update: Update, context: CallbackContext):
+from handlers.message_templates.welcome_doctor_message import \
+    WELCOME_DOCTOR_MESSAGE
+from handlers.message_templates.welcome_patient_message import \
+    WELCOME_PATIENT_MESSAGE
+
+
+def authorized_user_router(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_or_create_user(telegram_user)
 

@@ -1,12 +1,12 @@
+from states import UserStates
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 from utils.find_user import find_user
+
 from .message_templates import FINISH_CONVERSATION_MESSAGE
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-
-from states import UserStates
 
 
-def finish_conversation_callback(update: Update, context: CallbackContext):
+def user_finish_conversation(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
 
@@ -14,9 +14,9 @@ def finish_conversation_callback(update: Update, context: CallbackContext):
         if user.state != UserStates.FINISH_CONVERSATION_STATE:
             print("StateError")
         else:
-            share_problem_buttons = [
-                InlineKeyboardButton(text="Поделиться проблемой", callback_data="create_appeal_button"),
-            ]
+            share_problem_buttons = [InlineKeyboardButton(
+                                        text="Поделиться проблемой", 
+                                        callback_data="create_appeal_button")]
             kb = InlineKeyboardMarkup([[*share_problem_buttons]])
 
             context.bot.send_message(
