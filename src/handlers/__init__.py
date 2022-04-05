@@ -62,7 +62,7 @@ HANDLERS = [
     ),
 
     CallbackQueryHandler(
-        user_select_connection_callback,
+        select_connection_callback,
         pattern=r"set_.+_lang_button"
     ),
 
