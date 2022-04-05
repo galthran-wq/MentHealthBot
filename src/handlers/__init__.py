@@ -5,7 +5,7 @@ from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler
 from .all_welcome import all_welcome
 from .authorized_user_router import authorized_user_router
 from .check_authorization import check_authorization
-from .doctor_examine_apeal import doctor_examine_appeal
+from .doctor_examine_appeal import doctor_examine_appeal
 from .doctor_menu import doctor_menu
 from .doctor_select_appeal import doctor_select_appeal
 from .user_change_problem import user_change_problem
