@@ -1,3 +1,4 @@
+from models.connection_types import connections
 from models.problems import Problems
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
 from telegram.ext import CallbackContext
@@ -37,7 +38,7 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
             if problem.value.short in appeal.problems:
                 problems.append(f"- {problem.value.name}")
         problems = "\n".join(problems)
-        conn_type = appeal.connection_type
+        conn_type = connections[appeal.connection_type]
 
         context.bot.send_message(
             chat_id=telegram_user.id,
