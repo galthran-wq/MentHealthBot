@@ -1,7 +1,7 @@
 from models import Appeal, User, connection_types
 
 
-def get_new_appeals() -> list[Appeal]:
+def get_new_appeals() -> list[(str, int)]:
     data = Appeal.select().where(Appeal.therapist==None)
     if data:
         new_appeals = []
