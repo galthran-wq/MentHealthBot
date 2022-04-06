@@ -1,10 +1,8 @@
-import logging
 from re import search
-import secrets
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
 from telegram.ext import CallbackContext
-from models.exceptions import StateError
 from states import UserStates
+from utils.check_state import check_state
 from utils.find_appeal_by_id import find_appeal_by_id
 from utils.find_user import find_user
 from utils.find_user_by_id import find_user_by_id
@@ -24,11 +22,9 @@ def make_keyboard() -> InlineKeyboardMarkup:
 def doctor_take_appeal(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    if user.state != UserStates.EXAMINE_APPEAL_STATE:
-        logging.info(f"User state is {user.state}")
-        raise StateError("User state is incorrect.")
-    
+    check_state(user.state, [UserStates.EXAMINE_APPEAL_STATE])
     update_user_state(user, UserStates.TAKE_APPEAL_STATE)
+    
     appeal_id = search(r"(?P<id>\d+)", update.callback_query.data)
     appeal_id = appeal_id.group("id")
     appeal = find_appeal_by_id(appeal_id)

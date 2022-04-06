@@ -1,10 +1,9 @@
-import logging
 from re import search
-from models.exceptions import StateError
 from models.user import User
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
+from utils.check_state import check_state
 from utils.find_appeal_by_user_id import find_appeal_by_user_id
 from utils.find_user import find_user
 from utils.update_user_state import update_user_state
@@ -38,10 +37,7 @@ def make_keyboard() -> InlineKeyboardMarkup:
 def user_select_connection(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    if user.state == UserStates.LANGUAGE_SELECTION_STATE:
-        logging.info(f"User state is {user.state}")
-        raise StateError("User state is incorrect.")
-
+    check_state(user.state, [UserStates.LANGUAGE_SELECTION_STATE])
     update_user_state(user, UserStates.SELECT_CONNECTION_STATE)
     update_appeal(user, update.callback_query)
 

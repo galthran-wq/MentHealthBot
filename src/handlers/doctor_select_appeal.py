@@ -1,8 +1,7 @@
-import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
-from models.exceptions import StateError
 from states import UserStates
+from utils.check_state import check_state
 from utils.find_user import find_user
 from utils.get_new_appeals import get_new_appeals
 from utils.update_user_state import update_user_state
@@ -26,11 +25,10 @@ def make_keyboard() -> InlineKeyboardMarkup:
 def doctor_select_appeal(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    if user.state not in (UserStates.DOCTOR_MENU_STATE, UserStates.EXAMINE_APPEAL_STATE):
-        logging.info(f"User state is {user.state}")
-        raise StateError("User state is incorrect.")
-    
+    check_state(user.state, [UserStates.DOCTOR_MENU_STATE, 
+                             UserStates.EXAMINE_APPEAL_STATE])
     update_user_state(user, UserStates.SELECT_APPEAL_STATE)
+    
     kb = make_keyboard()
 
     context.bot.send_message(
