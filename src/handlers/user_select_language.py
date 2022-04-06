@@ -9,7 +9,7 @@ from utils.update_user_state import update_user_state
 from .message_templates import USER_SELECTION_LANGUAGE_MESSAGE
 
 
-def make_keyboard():
+def make_keyboard() -> InlineKeyboardMarkup:
     language_buttons = [InlineKeyboardButton(
                             text="Русский", 
                             callback_data="set_russian_lang_button"),

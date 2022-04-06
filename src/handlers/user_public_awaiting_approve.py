@@ -1,6 +1,7 @@
 import logging
 from re import search
 from models.exceptions import StateError
+from models.user import User
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -11,14 +12,14 @@ from utils.update_user_state import update_user_state
 from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 
 
-def update_appeal(user, callback):
+def update_appeal(user: User, callback: Update.CALLBACK_QUERY):
     appeal = find_appeal_by_user_id(user)
-    conn = search(r"(?P<type>\w+)_connection_type_button", callback)
+    conn = search(r"(?P<type>\w+)_connection_type_button", callback.data)
     conn = conn.group("type")
     appeal.update(connection_type=conn).execute()
 
 
-def make_keyboard():
+def make_keyboard() -> InlineKeyboardMarkup:
     good_button = [
         InlineKeyboardButton(text="Со мной все хорошо!", callback_data="cancel_appeal_button"),
     ]
@@ -34,7 +35,7 @@ def user_public_awaiting_approve(update: Update, context: CallbackContext):
         raise StateError("User state is incorrect.")
 
     update_user_state(user, UserStates.PUBLIC_AWAITING_APPROVE_STATE)
-    update_appeal(user, update.callback_query.data)
+    update_appeal(user, update.callback_query)
 
     kb = make_keyboard()
 

@@ -12,7 +12,7 @@ from utils.update_user_state import update_user_state
 from .message_templates.doctor_take_appeal_message import MESSAGE
 
 
-def make_keyboard():
+def make_keyboard() -> InlineKeyboardMarkup:
     buttons = [InlineKeyboardButton(
         text=f"Спасибо, господин Xi! 🍚",
         callback_data="doctor_menu_button"

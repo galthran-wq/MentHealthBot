@@ -8,7 +8,7 @@ from utils.get_new_appeals import get_new_appeals
 from utils.update_user_state import update_user_state
 
 
-def make_keyboard():
+def make_keyboard() -> InlineKeyboardMarkup:
     new_appeals = get_new_appeals()
     buttons = []
     for appeal in new_appeals:

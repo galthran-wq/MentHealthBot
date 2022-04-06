@@ -3,6 +3,7 @@ from re import search
 from models.connection_types import CONNECTION_TYPES
 from models.exceptions import StateError
 from models.problems import Problems
+from models import Appeal
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
 from telegram.ext import CallbackContext
 from states import UserStates
@@ -13,15 +14,16 @@ from utils.update_user_state import update_user_state
 from .message_templates.doctor_examine_appeal_message import MESSAGE
 
 
-def make_problems_list(appeal_problems):
+def make_problems_list(appeal_problems: list[str]) -> list[str]:
     problems = []
     for problem in Problems:
         if problem.value.short in appeal_problems:
             problems.append(f"- {problem.value.name}")
     problems = "\n".join(problems)
+    return problems
 
 
-def make_keyboard(appeal):
+def make_keyboard(appeal: Appeal) -> InlineKeyboardMarkup:
     buttons = [InlineKeyboardButton(
         text=f"Принять вызов",
         callback_data=f"take_appeal_{appeal.id}_button"

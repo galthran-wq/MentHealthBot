@@ -1,6 +1,7 @@
 import logging
 from re import search
 from models.exceptions import StateError
+from models.user import User
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -11,14 +12,14 @@ from utils.update_user_state import update_user_state
 from .message_templates import SELECT_CONNECTION_MESSAGE
 
 
-def update_appeal(user, callback):
+def update_appeal(user: User, callback: Update.CALLBACK_QUERY):
     appeal = find_appeal_by_user_id(user)
-    lang = search(r"set_(?P<lang>\w+)_lang_button", callback)
+    lang = search(r"set_(?P<lang>\w+)_lang_button", callback.data)
     lang = lang.group("lang")
     appeal.update(language=lang).execute()
 
 
-def make_keyboard():
+def make_keyboard() -> InlineKeyboardMarkup:
     connection_type_button = [
         InlineKeyboardButton(
             text="Личное (очное) общение",
@@ -42,7 +43,7 @@ def user_select_connection(update: Update, context: CallbackContext):
         raise StateError("User state is incorrect.")
 
     update_user_state(user, UserStates.SELECT_CONNECTION_STATE)
-    update_appeal(user, update.callback_query.data)
+    update_appeal(user, update.callback_query)
 
     kb = make_keyboard()
 
