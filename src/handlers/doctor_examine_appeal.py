@@ -1,6 +1,6 @@
 import logging
 from re import search
-from models.connection_types import connections
+from models.connection_types import CONNECTION_TYPES
 from models.exceptions import StateError
 from models.problems import Problems
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
@@ -49,7 +49,7 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     kb = make_keyboard(appeal)
     name = " ".join([patient.first_name, patient.last_name])
     problems = make_problems_list(appeal.problems)
-    conn_type = connections[appeal.connection_type]
+    conn_type = CONNECTION_TYPES[appeal.connection_type]
 
     context.bot.send_message(
         chat_id=telegram_user.id,
