@@ -1,3 +1,4 @@
+from re import search
 from models.connection_types import connections
 from models.problems import Problems
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
@@ -28,7 +29,9 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     user = find_user(telegram_user)
     if user.state == UserStates.SELECT_APPEAL_STATE:
         update_user_state(user, UserStates.EXAMINE_APPEAL_STATE)
-        appeal = find_appeal_by_id(update.callback_query.data.split("_")[2])
+        appeal_id = search(r"(?P<id>\d+)", update.callback_query.data)
+        appeal_id = appeal_id.group("id")
+        appeal = find_appeal_by_id(appeal_id)
         patient = find_user_by_id(appeal.patient_id)
 
         kb = make_keyboard(appeal)

@@ -1,3 +1,4 @@
+from re import search
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -17,7 +18,9 @@ def user_select_connection(update: Update, context: CallbackContext):
 
         appeal = find_appeal_by_user_id(user)
         try:
-            appeal.update(language=update.callback_query.data.split("_")[1]).execute()
+            lang = search(r"set_(?P<lang>\w+)_lang_button", update.callback_query.data)
+            lang = lang.group("lang")
+            appeal.update(language=lang).execute()
         except AttributeError:
             print("AppealError")
 

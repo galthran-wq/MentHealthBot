@@ -1,3 +1,5 @@
+from re import search
+import secrets
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
 from telegram.ext import CallbackContext
 from states import UserStates
@@ -22,7 +24,9 @@ def doctor_take_appeal(update: Update, context: CallbackContext):
     user = find_user(telegram_user)
     if user.state == UserStates.EXAMINE_APPEAL_STATE:
         update_user_state(user, UserStates.TAKE_APPEAL_STATE)
-        appeal = find_appeal_by_id(update.callback_query.data.split("_")[2])
+        appeal_id = search(r"(?P<id>\d+)", update.callback_query.data)
+        appeal_id = appeal_id.group("id")
+        appeal = find_appeal_by_id(appeal_id)
         appeal.update(therapist_id=user.id).execute()
         appeal.update(active=False).execute()
         patient = find_user_by_id(appeal.patient_id)

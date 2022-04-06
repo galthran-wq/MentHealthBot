@@ -4,10 +4,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 from utils.find_or_create_user import find_or_create_user
 
-from handlers.message_templates.welcome_doctor_message import \
-    WELCOME_DOCTOR_MESSAGE
-from handlers.message_templates.welcome_patient_message import \
-    WELCOME_PATIENT_MESSAGE
+from handlers.message_templates import WELCOME_PATIENT_MESSAGE, WELCOME_DOCTOR_MESSAGE
 from utils.update_user_state import update_user_state
 
 

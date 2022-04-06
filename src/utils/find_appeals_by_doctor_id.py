@@ -2,7 +2,7 @@ from models import User
 from models import Appeal
 
 
-def find_appeals_by_doctor_id(therapist: User) -> list[Appeal]:
+def find_appeals_by_doctor_id(therapist: User) -> list[str]:
     data = Appeal.select().where(Appeal.therapist == therapist.id)
     if data:
         appeals = []

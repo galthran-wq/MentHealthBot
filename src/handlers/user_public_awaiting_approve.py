@@ -1,3 +1,4 @@
+from re import search
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -15,7 +16,9 @@ def user_public_awaiting_approve(update: Update, context: CallbackContext):
         update_user_state(user, UserStates.PUBLIC_AWAITING_APPROVE_STATE)
         appeal = find_appeal_by_user_id(user)
         try:
-            appeal.update(connection_type=update.callback_query.data.split("_")[0]).execute()
+            conn = search(r"(?P<type>\w+)_connection_type_button", update.callback_query.data)
+            conn = conn.group("type")
+            appeal.update(connection_type=conn).execute()
         except AttributeError:
             print("AppealError")
 

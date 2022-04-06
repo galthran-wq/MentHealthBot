@@ -88,11 +88,11 @@ HANDLERS = [
 
     CallbackQueryHandler(
         doctor_examine_appeal,
-        pattern=r"^get_appeal_.*_button$"
+        pattern=r"^get_appeal_.+_button$"
     ),
 
     CallbackQueryHandler(
         doctor_take_appeal,
-        pattern=r"^take_appeal_.*_button$"
+        pattern=r"^take_appeal_.+_button$"
     )
 ]
