@@ -11,23 +11,14 @@ from utils.update_user_state import update_user_state
 from .message_templates import SELECT_CONNECTION_MESSAGE
 
 
-def user_select_connection(update: Update, context: CallbackContext):
-    telegram_user = update.effective_user
-    user = find_user(telegram_user)
-    if user.state == UserStates.LANGUAGE_SELECTION_STATE:
-        logging.info(f"User state is {user.state}")
-        raise StateError("User state is incorrect.")
-
-    update_user_state(user, UserStates.SELECT_CONNECTION_STATE)
-
+def update_appeal(user, callback):
     appeal = find_appeal_by_user_id(user)
-    try:
-        lang = search(r"set_(?P<lang>\w+)_lang_button", update.callback_query.data)
-        lang = lang.group("lang")
-        appeal.update(language=lang).execute()
-    except AttributeError:
-        print("AppealError")
+    lang = search(r"set_(?P<lang>\w+)_lang_button", callback)
+    lang = lang.group("lang")
+    appeal.update(language=lang).execute()
 
+
+def make_keyboard():
     connection_type_button = [
         InlineKeyboardButton(
             text="Личное (очное) общение",
@@ -39,9 +30,21 @@ def user_select_connection(update: Update, context: CallbackContext):
             text="Переписка",
             callback_data="chat_connection_type_button")
     ]
+    kb = InlineKeyboardMarkup([[*connection_type_button]])
+    return kb
 
-    kb = InlineKeyboardMarkup([[button]
-                                for button in connection_type_button])
+
+def user_select_connection(update: Update, context: CallbackContext):
+    telegram_user = update.effective_user
+    user = find_user(telegram_user)
+    if user.state == UserStates.LANGUAGE_SELECTION_STATE:
+        logging.info(f"User state is {user.state}")
+        raise StateError("User state is incorrect.")
+
+    update_user_state(user, UserStates.SELECT_CONNECTION_STATE)
+    update_appeal(user, update.callback_query.data)
+
+    kb = make_keyboard()
 
     context.bot.send_message(
         chat_id=telegram_user.id,
