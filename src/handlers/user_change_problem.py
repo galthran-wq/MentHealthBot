@@ -1,5 +1,7 @@
+import logging
 from re import search
-from models.problems import Problems
+from models.exceptions import StateError
+from models.problems import Problems, Problem
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 from states import UserStates
@@ -7,7 +9,7 @@ from utils.find_appeal_by_user_id import find_appeal_by_user_id
 from utils.find_user import find_user
 
 
-def get_problem_keyboard(user_problems: list) -> InlineKeyboardMarkup:
+def get_problem_keyboard(user_problems: list[Problem]) -> InlineKeyboardMarkup:
     buttons = []
     for problem in Problems:
         buttons.append(InlineKeyboardButton(
@@ -25,21 +27,21 @@ def get_problem_keyboard(user_problems: list) -> InlineKeyboardMarkup:
 def user_change_problem(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    print(user.state)
-    if user.state == UserStates.SELECT_PROBLEM_STATE:
-        appeal = find_appeal_by_user_id(user)
-        callback = update.callback_query.data
-        problem = search(r"(?P<problem>\w+)_problem_button", callback)
-        problem = problem.group("problem")
-        #todo: replace save() to update() method
-        if problem in appeal.problems:
-            appeal.problems.remove(problem)
-        else:
-            appeal.problems.append(problem)
-        appeal.save()
-
-        kb = get_problem_keyboard(appeal.problems)
-
-        update.callback_query.edit_message_reply_markup(kb)
+    if user.state != UserStates.SELECT_PROBLEM_STATE:
+        logging.info(f"User state is {user.state}")
+        raise StateError("User state is incorrect.")
+    
+    appeal = find_appeal_by_user_id(user)
+    callback = update.callback_query.data
+    problem = search(r"(?P<problem>\w+)_problem_button", callback)
+    problem = problem.group("problem")
+    #todo: replace save() to update() method
+    if problem in appeal.problems:
+        appeal.problems.remove(problem)
     else:
-        print("StateError")
+        appeal.problems.append(problem)
+    appeal.save()
+
+    kb = get_problem_keyboard(appeal.problems)
+
+    update.callback_query.edit_message_reply_markup(kb)

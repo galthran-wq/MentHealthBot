@@ -1,4 +1,6 @@
+import logging
 from re import search
+from models.exceptions import StateError
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -12,26 +14,27 @@ from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 def user_public_awaiting_approve(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    if user.state == UserStates.SELECT_CONNECTION_STATE:
-        update_user_state(user, UserStates.PUBLIC_AWAITING_APPROVE_STATE)
-        appeal = find_appeal_by_user_id(user)
-        try:
-            conn = search(r"(?P<type>\w+)_connection_type_button", update.callback_query.data)
-            conn = conn.group("type")
-            appeal.update(connection_type=conn).execute()
-        except AttributeError:
-            print("AppealError")
+    if user.state != UserStates.SELECT_CONNECTION_STATE:
+        logging.info(f"User state is {user.state}")
+        raise StateError("User state is incorrect.")
 
-        good_button = [
-            InlineKeyboardButton(text="Со мной все хорошо!", callback_data="cancel_appeal_button"),
-        ]
+    update_user_state(user, UserStates.PUBLIC_AWAITING_APPROVE_STATE)
+    appeal = find_appeal_by_user_id(user)
+    try:
+        conn = search(r"(?P<type>\w+)_connection_type_button", update.callback_query.data)
+        conn = conn.group("type")
+        appeal.update(connection_type=conn).execute()
+    except AttributeError:
+        print("AppealError")
 
-        kb = InlineKeyboardMarkup([[*good_button]])
+    good_button = [
+        InlineKeyboardButton(text="Со мной все хорошо!", callback_data="cancel_appeal_button"),
+    ]
 
-        context.bot.send_message(
-            chat_id=telegram_user.id,
-            text=PUBLIC_AWAITING_APPROVE_MESSAGE,
-            reply_markup=kb
-        )
-    else:
-        print("StateError")
+    kb = InlineKeyboardMarkup([[*good_button]])
+
+    context.bot.send_message(
+        chat_id=telegram_user.id,
+        text=PUBLIC_AWAITING_APPROVE_MESSAGE,
+        reply_markup=kb
+    )

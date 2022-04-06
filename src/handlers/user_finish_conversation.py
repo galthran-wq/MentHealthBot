@@ -1,3 +1,5 @@
+import logging
+from models.exceptions import StateError
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -11,23 +13,24 @@ from .message_templates import FINISH_CONVERSATION_MESSAGE
 def user_finish_conversation(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    if user.state in (UserStates.PUBLIC_AWAITING_APPROVE_STATE, UserStates.ANON_AWAITING_APPROVE_STATE):
-        update_user_state(user, UserStates.FINISH_CONVERSATION_STATE)
-        appeal = find_appeal_by_user_id(user)
-        try:
-            appeal.update(active=False).execute()
-        except AttributeError:
-            print("AppealError")
-        
-        share_problem_buttons = [InlineKeyboardButton(
-                                    text="Поделиться проблемой", 
-                                    callback_data="create_appeal_button")]
-        kb = InlineKeyboardMarkup([[*share_problem_buttons]])
+    if user.state not in (UserStates.PUBLIC_AWAITING_APPROVE_STATE, UserStates.ANON_AWAITING_APPROVE_STATE):
+        logging.info(f"User state is {user.state}")
+        raise StateError("User state is incorrect.")
 
-        context.bot.send_message(
-            chat_id=telegram_user.id,
-            text=FINISH_CONVERSATION_MESSAGE,
-            reply_markup=kb
-        )
-    else:
-        print("StateError")
+    update_user_state(user, UserStates.FINISH_CONVERSATION_STATE)
+    appeal = find_appeal_by_user_id(user)
+    try:
+        appeal.update(active=False).execute()
+    except AttributeError:
+        print("AppealError")
+    
+    share_problem_buttons = [InlineKeyboardButton(
+                                text="Поделиться проблемой", 
+                                callback_data="create_appeal_button")]
+    kb = InlineKeyboardMarkup([[*share_problem_buttons]])
+
+    context.bot.send_message(
+        chat_id=telegram_user.id,
+        text=FINISH_CONVERSATION_MESSAGE,
+        reply_markup=kb
+    )
