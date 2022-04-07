@@ -1,11 +1,14 @@
-from telegram.ext import CallbackContext
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from utils.find_appeal import find_appeal
-from utils.find_user import find_user
+from re import search
 from models.problems import Problems, Problem
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import CallbackContext
+from states import UserStates
+from utils.check_state import check_state
+from utils.find_appeal_by_user_id import find_appeal_by_user_id
+from utils.find_user import find_user
 
 
-def get_problem_keyboard(user_problems: list) -> InlineKeyboardMarkup:
+def get_problem_keyboard(user_problems: list[Problem]) -> InlineKeyboardMarkup:
     buttons = []
     for problem in Problems:
         buttons.append(InlineKeyboardButton(
@@ -20,12 +23,16 @@ def get_problem_keyboard(user_problems: list) -> InlineKeyboardMarkup:
     return kb
 
 
-def change_problem_callback(update: Update, context: CallbackContext):
+def user_change_problem(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    appeal = find_appeal(user)
+    check_state(user.state, [UserStates.SELECT_PROBLEM_STATE])
+
+    appeal = find_appeal_by_user_id(user)
     callback = update.callback_query.data
-    problem = callback.split("_")[0]
+    problem = search(r"(?P<problem>\w+)_problem_button", callback)
+    problem = problem.group("problem")
+    #todo: replace save() to update() method
     if problem in appeal.problems:
         appeal.problems.remove(problem)
     else:

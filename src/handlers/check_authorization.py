@@ -1,13 +1,12 @@
-from asyncio.log import logger
+from states import UserStates
 from telegram import Update
 from telegram.ext import CallbackContext
-from handlers.authorized_user_callback import authorized_user_callback
-from handlers.user_welcome_callback import user_welcome_callback
-from states import UserStates
 from utils import find_user
 
+from handlers.all_welcome import all_welcome
 
-def check_authorization_callback(update: Update, context: CallbackContext):
+
+def check_authorization(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     if user is not None:
@@ -17,4 +16,4 @@ def check_authorization_callback(update: Update, context: CallbackContext):
         )
         print(f"User with mail={user.hse_mail} is authorized")
     else:
-        user_welcome_callback(update, context)
+        all_welcome(update, context)

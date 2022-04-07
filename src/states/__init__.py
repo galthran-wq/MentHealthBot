@@ -8,4 +8,8 @@ class UserStates:
     LANGUAGE_SELECTION_STATE = "LanguageSelectionState"
     SELECT_CONNECTION_STATE = "SelectConnectionState"
     PUBLIC_AWAITING_APPROVE_STATE = "PublicAwaitingApproveState"
+    ANON_AWAITING_APPROVE_STATE = "AnonAwaitingApproveState"
     FINISH_CONVERSATION_STATE = "FinishConversationState"
+    SELECT_APPEAL_STATE = "SelectAppealState"
+    EXAMINE_APPEAL_STATE = "ExamineAppealState"
+    TAKE_APPEAL_STATE = "TakeAppealState"

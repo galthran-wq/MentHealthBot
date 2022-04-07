@@ -1,53 +1,98 @@
 from filters.state_filter import StateFilter
-from .check_authorization_callback import check_authorization_callback
 from states import UserStates
-from .user_welcome_callback import user_welcome_callback
-from .select_problem_state_callback import select_problem_callback
-from .change_problem_callback import change_problem_callback
-from .done_problem_selecting_callback import done_problem_selecting_callback
-from .authorized_user_callback import authorized_user_callback
-from .user_selection_language_callback import user_selection_language_callback
-from .select_connection_callback import select_connection_callback
-from .select_problem_state_callback import select_problem_callback
-from .public_awaiting_approve_callback import public_awaiting_approve_callback
-from .finish_conversation_callback import finish_conversation_callback
-from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
+from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler
+
+from .all_welcome import all_welcome
+from .authorized_user_router import authorized_user_router
+from .check_authorization import check_authorization
+from .doctor_examine_appeal import doctor_examine_appeal
+from .doctor_menu import doctor_menu
+from .doctor_select_appeal import doctor_select_appeal
+from .doctor_take_appeal import doctor_take_appeal
+from .user_change_problem import user_change_problem
+from .user_finish_conversation import user_finish_conversation
+from .user_public_awaiting_approve import user_public_awaiting_approve
+from .user_select_connection import user_select_connection
+from .user_select_language import user_select_language
+from .user_select_problem import user_select_problem
 
 HANDLERS = [
-    CommandHandler("start", select_problem_callback),
+    CommandHandler(
+        "start",
+        all_welcome
+    ),
 
-    CallbackQueryHandler(authorized_user_callback, pattern="auth_succesfull"),
+    # todo: change name of the button after @olex1313 will set up authorization server
+    CallbackQueryHandler(
+        authorized_user_router,
+        pattern="auth_succesfull"
+    ),
+
     MessageHandler(
         StateFilter(UserStates.AWAITING_AUTHORIZATION_STATE),
-        authorized_user_callback
+        authorized_user_router
     ),
-
-    CallbackQueryHandler(select_connection_callback, pattern="russia"),
-    CallbackQueryHandler(select_connection_callback, pattern="english"),
-
-    CallbackQueryHandler(public_awaiting_approve_callback, pattern="personal"),
-    CallbackQueryHandler(public_awaiting_approve_callback, pattern="online"),
-    CallbackQueryHandler(public_awaiting_approve_callback, pattern="chat"),
-
-    # ToDo: If the user don't click to good_button???
-    CallbackQueryHandler(finish_conversation_callback, pattern="good"),
-
-    CallbackQueryHandler(select_problem_callback, pattern="problem_button"),
-    CallbackQueryHandler(select_problem_callback, pattern="share_problem"),
 
     MessageHandler(
-        StateFilter(UserStates.DOCTOR_MENU_STATE), authorized_user_callback
+        StateFilter(UserStates.DOCTOR_MENU_STATE),
+        authorized_user_router
     ),
+
     MessageHandler(
-        StateFilter(UserStates.SELECT_PROBLEM_STATE), authorized_user_callback
+        StateFilter(UserStates.SELECT_PROBLEM_STATE),
+        authorized_user_router
     ),
+
+    # user can reach this step with two ways: when he/she registers in the bot
+    # and when he/she wants to share the problem again
     CallbackQueryHandler(
-        change_problem_callback,
-        pattern=r".*_problem_button$"
+        user_select_problem,
+        pattern=r"^create_appeal_button$"
     ),
 
     CallbackQueryHandler(
-        user_selection_language_callback,
+        user_change_problem,
+        pattern=r".+_problem_button$"
+    ),
+
+    CallbackQueryHandler(
+        user_select_language,
         pattern=r"^done_selecting_problems_button$"
+    ),
+
+    CallbackQueryHandler(
+        user_select_connection,
+        pattern=r"set_.+_lang_button"
+    ),
+
+    CallbackQueryHandler(
+        user_public_awaiting_approve,
+        pattern=r".+_connection_type_button"
+    ),
+
+    # ToDo: If the user don't click to cancel_appeal_button???
+    CallbackQueryHandler(
+        user_finish_conversation,
+        pattern=r"^cancel_appeal_button$"
+    ),
+
+    CallbackQueryHandler(
+        doctor_menu,
+        pattern=r"^doctor_menu_button$"
+    ),
+
+    CallbackQueryHandler(
+        doctor_select_appeal,
+        pattern=r"^new_appeals_menu_button$"
+    ),
+
+    CallbackQueryHandler(
+        doctor_examine_appeal,
+        pattern=r"^get_appeal_.+_button$"
+    ),
+
+    CallbackQueryHandler(
+        doctor_take_appeal,
+        pattern=r"^take_appeal_.+_button$"
     )
 ]

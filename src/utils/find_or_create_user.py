@@ -1,4 +1,3 @@
-
 from telegram import User
 from models import User as BotUser
 from .user_by_telegram_id_query import user_by_telegram_id_query
