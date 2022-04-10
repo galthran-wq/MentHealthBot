@@ -26,10 +26,9 @@ def delete_admin(update: Update, context: CallbackContext):
     user = find_user_by_telegram_user(telegram_user)
     admin_username = update.message.text[1:]
 
-    if user_by_telegram_username(admin_username):
+    if delete_admin_by_telegram_username(admin_username) is True:
         admin = user_by_telegram_username(admin_username).get()
         update_user_state(admin, UserStates.ERROR_AUTHORIZATION_ADMIN_STATE)
-        delete_admin_by_telegram_username(admin_username)
         context.bot.send_message(
             chat_id=telegram_user.id,
             text=DELETE_ADMIN_SUCCESS_MESSAGE,

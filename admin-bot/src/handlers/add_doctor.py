@@ -26,8 +26,7 @@ def add_doctor(update: Update, context: CallbackContext):
     user = find_user_by_telegram_user(telegram_user)
     doctor_username = update.message.text[1:]
 
-    if user_by_telegram_username(doctor_username):
-        make_user_an_doctor_by_telegram_username(doctor_username)
+    if make_user_an_doctor_by_telegram_username(doctor_username) is True:
         context.bot.send_message(
             chat_id=telegram_user.id,
             text=ADD_DOCTOR_SUCCESS_MESSAGE,

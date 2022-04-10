@@ -26,8 +26,7 @@ def delete_doctor(update: Update, context: CallbackContext):
     user = find_user_by_telegram_user(telegram_user)
     doctor_username = update.message.text[1:]
 
-    if user_by_telegram_username(doctor_username):
-        delete_doctor_by_telegram_username(doctor_username)
+    if delete_doctor_by_telegram_username(doctor_username) is True:
         context.bot.send_message(
             chat_id=telegram_user.id,
             text=DELETE_DOCTOR_SUCCESS_MESSAGE,

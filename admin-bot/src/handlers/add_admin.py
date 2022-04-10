@@ -28,8 +28,7 @@ def add_admin(update: Update, context: CallbackContext):
     user = find_user_by_telegram_user(telegram_user)
     admin_username = update.message.text[1:]
 
-    if user_by_telegram_username(admin_username):
-        make_user_an_admin_by_telegram_username(admin_username)
+    if make_user_an_admin_by_telegram_username(admin_username) is True:
         context.bot.send_message(
             chat_id=telegram_user.id,
             text=ADD_ADMIN_SUCCESS_MESSAGE,
