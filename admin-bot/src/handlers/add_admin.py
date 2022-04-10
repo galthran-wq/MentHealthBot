@@ -4,8 +4,6 @@ from utils.check_state import check_state
 from utils.update_user_state import update_user_state
 from utils.find_user_by_telegram_user import find_user_by_telegram_user
 from states import UserStates
-from utils.check_admin import check_admin
-from utils.user_by_telegram_username import user_by_telegram_username
 from utils.make_user_an_admin_by_telegram_username import make_user_an_admin_by_telegram_username
 from .message_templates import ADD_ADMIN_MESSAGE, ADD_ADMIN_SUCCESS_MESSAGE, ADD_ADMIN_ERROR_MESSAGE
 

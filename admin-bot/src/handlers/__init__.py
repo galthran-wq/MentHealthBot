@@ -4,6 +4,8 @@ from .delete_doctor import delete_doctor_start, delete_doctor
 from .doctor_list import doctor_list
 from .add_admin import add_admin, add_admin_start
 from .delete_admin import delete_admin, delete_admin_start
+from .back import back
+from .help import help
 from filters.state_filter import StateFilter
 from states import UserStates
 from telegram.ext import CommandHandler, MessageHandler
@@ -12,6 +14,14 @@ HANDLERS = [
     CommandHandler(
         'start',
         welcome_message
+    ),
+    CommandHandler(
+        'back',
+        back
+    ),
+    CommandHandler(
+        'help',
+        help
     ),
     CommandHandler(
         'add_doctor',
