@@ -15,8 +15,9 @@ from .message_templates.finish_conversation_message import \
 
 def update_appeal(appeal_id: int, therapist: User) -> Appeal:
     appeal = find_appeal_by_id(appeal_id)
-    appeal.update(therapist_id=therapist.id).execute()
-    appeal.update(active=False).execute()
+    appeal.therapist = therapist.id
+    appeal.active = False
+    appeal.save(only=[Appeal.therapist, Appeal.active])
     return appeal
 
 
