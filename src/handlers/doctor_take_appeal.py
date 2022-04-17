@@ -48,7 +48,6 @@ def doctor_take_appeal(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     therapist = find_user(telegram_user)
     check_state(therapist.state, [UserStates.EXAMINE_APPEAL_STATE])
-    update_user_state(therapist, UserStates.TAKE_APPEAL_STATE)
 
     appeal_id = search(r"(?P<id>\d+)", update.callback_query.data)
     appeal_id = appeal_id.group("id")
@@ -64,3 +63,5 @@ def doctor_take_appeal(update: Update, context: CallbackContext):
         parse_mode=ParseMode.HTML,
         reply_markup=kb
     )
+
+    update_user_state(therapist, UserStates.TAKE_APPEAL_STATE)

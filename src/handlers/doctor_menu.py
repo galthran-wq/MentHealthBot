@@ -11,10 +11,9 @@ from utils.update_user_state import update_user_state
 def doctor_menu(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, [UserStates.DOCTOR_MENU_STATE, 
-                             UserStates.SELECT_APPEAL_STATE, 
-                             UserStates.TAKE_APPEAL_STATE])    
-    update_user_state(user, UserStates.DOCTOR_MENU_STATE)
+    check_state(user.state, [UserStates.DOCTOR_MENU_STATE,
+                             UserStates.SELECT_APPEAL_STATE,
+                             UserStates.TAKE_APPEAL_STATE])
     new_appeals = len(get_new_appeals())
     doctor_appeals = len(find_appeals_by_doctor_id(user))
 
@@ -29,3 +28,5 @@ def doctor_menu(update: Update, context: CallbackContext):
         text="Главное меню",
         reply_markup=kb
     )
+    
+    update_user_state(user, UserStates.DOCTOR_MENU_STATE)
