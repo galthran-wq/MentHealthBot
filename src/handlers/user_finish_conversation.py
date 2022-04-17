@@ -1,3 +1,4 @@
+from models.appeal import Appeal
 from models.user import User
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -12,20 +13,19 @@ from .message_templates import FINISH_CONVERSATION_MESSAGE
 
 def update_appeal(user: User):
     appeal = find_appeal_by_user_id(user)
-    appeal.update(active=False).execute()
+    appeal.active = False
+    appeal.save(only=[Appeal.active])
 
 
 def user_finish_conversation(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, [UserStates.PUBLIC_AWAITING_APPROVE_STATE, 
+    check_state(user.state, [UserStates.PUBLIC_AWAITING_APPROVE_STATE,
                              UserStates.ANON_AWAITING_APPROVE_STATE])
-    update_user_state(user, UserStates.FINISH_CONVERSATION_STATE)
-    update_appeal(user)
-    
-    
+    update_appeal(user)   
+
     share_problem_buttons = [InlineKeyboardButton(
-                                text="Поделиться проблемой", 
+                                text="Поделиться проблемой",
                                 callback_data="create_appeal_button")]
     kb = InlineKeyboardMarkup([[*share_problem_buttons]])
 
@@ -34,3 +34,5 @@ def user_finish_conversation(update: Update, context: CallbackContext):
         text=FINISH_CONVERSATION_MESSAGE,
         reply_markup=kb
     )
+
+    update_user_state(user, UserStates.FINISH_CONVERSATION_STATE)

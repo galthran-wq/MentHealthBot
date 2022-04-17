@@ -1,4 +1,5 @@
 from re import search
+from models.appeal import Appeal
 from models.user import User
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -15,7 +16,8 @@ def update_appeal(user: User, callback: Update.CALLBACK_QUERY):
     appeal = find_appeal_by_user_id(user)
     lang = search(r"set_(?P<lang>\w+)_lang_button", callback.data)
     lang = lang.group("lang")
-    appeal.update(language=lang).execute()
+    appeal.language = lang
+    appeal.save(only=[Appeal.language])
 
 
 def make_keyboard() -> InlineKeyboardMarkup:
@@ -38,7 +40,6 @@ def user_select_connection(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.LANGUAGE_SELECTION_STATE])
-    update_user_state(user, UserStates.SELECT_CONNECTION_STATE)
     update_appeal(user, update.callback_query)
 
     kb = make_keyboard()
@@ -48,3 +49,5 @@ def user_select_connection(update: Update, context: CallbackContext):
         text=SELECT_CONNECTION_MESSAGE,
         reply_markup=kb
     )
+    
+    update_user_state(user, UserStates.SELECT_CONNECTION_STATE)
