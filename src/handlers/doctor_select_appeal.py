@@ -14,7 +14,7 @@ def make_keyboard() -> InlineKeyboardMarkup:
         name_and_conn = appeal[0]
         conncetion = appeal[1]
         buttons.append(InlineKeyboardButton(
-            text=name_and_conn, 
+            text=name_and_conn,
             callback_data=f"get_appeal_{conncetion}_button"))
     buttons.append(InlineKeyboardButton(text="В главное меню",
                                         callback_data="doctor_menu_button"))
@@ -25,10 +25,9 @@ def make_keyboard() -> InlineKeyboardMarkup:
 def doctor_select_appeal(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, [UserStates.DOCTOR_MENU_STATE, 
+    check_state(user.state, [UserStates.DOCTOR_MENU_STATE,
                              UserStates.EXAMINE_APPEAL_STATE])
-    update_user_state(user, UserStates.SELECT_APPEAL_STATE)
-    
+
     kb = make_keyboard()
 
     context.bot.send_message(
@@ -36,3 +35,5 @@ def doctor_select_appeal(update: Update, context: CallbackContext):
         text="Нажмите на заявку, чтобы ознакомиться с кейсом",
         reply_markup=kb
     )
+
+    update_user_state(user, UserStates.SELECT_APPEAL_STATE)

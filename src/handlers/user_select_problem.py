@@ -25,10 +25,9 @@ def get_default_problem_keyboard() -> InlineKeyboardMarkup:
 def user_select_problem(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, [UserStates.SELECT_PROBLEM_STATE, 
+    check_state(user.state, [UserStates.SELECT_PROBLEM_STATE,
                              UserStates.FINISH_CONVERSATION_STATE])
-    update_user_state(user, UserStates.SELECT_PROBLEM_STATE)
-    
+
     create_appeal(user)
 
     kb = get_default_problem_keyboard()
@@ -39,3 +38,5 @@ def user_select_problem(update: Update, context: CallbackContext):
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb
     )
+
+    update_user_state(user, UserStates.SELECT_PROBLEM_STATE)

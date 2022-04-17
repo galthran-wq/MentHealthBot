@@ -39,7 +39,6 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.SELECT_APPEAL_STATE])
-    update_user_state(user, UserStates.EXAMINE_APPEAL_STATE)
     appeal_id = search(r"(?P<id>\d+)", update.callback_query.data)
     appeal_id = appeal_id.group("id")
     appeal = find_appeal_by_id(appeal_id)
@@ -56,3 +55,5 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb
     )
+    
+    update_user_state(user, UserStates.EXAMINE_APPEAL_STATE)

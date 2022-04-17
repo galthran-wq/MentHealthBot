@@ -1,4 +1,5 @@
 from re import search
+from models.appeal import Appeal
 from models.user import User
 from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -15,7 +16,8 @@ def update_appeal(user: User, callback: Update.CALLBACK_QUERY):
     appeal = find_appeal_by_user_id(user)
     conn = search(r"(?P<type>\w+)_connection_type_button", callback.data)
     conn = conn.group("type")
-    appeal.update(connection_type=conn).execute()
+    appeal.connection_type = conn
+    appeal.save(only=[Appeal.connection_type])
 
 
 def make_keyboard() -> InlineKeyboardMarkup:
@@ -30,7 +32,6 @@ def user_public_awaiting_approve(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.SELECT_CONNECTION_STATE])
-    update_user_state(user, UserStates.PUBLIC_AWAITING_APPROVE_STATE)
     update_appeal(user, update.callback_query)
 
     kb = make_keyboard()
@@ -40,3 +41,5 @@ def user_public_awaiting_approve(update: Update, context: CallbackContext):
         text=PUBLIC_AWAITING_APPROVE_MESSAGE,
         reply_markup=kb
     )
+
+    update_user_state(user, UserStates.PUBLIC_AWAITING_APPROVE_STATE)

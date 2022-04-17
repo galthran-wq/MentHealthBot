@@ -23,7 +23,6 @@ def user_select_language(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.SELECT_PROBLEM_STATE])
-    update_user_state(user, UserStates.LANGUAGE_SELECTION_STATE)
     
     kb = make_keyboard()
 
@@ -32,3 +31,5 @@ def user_select_language(update: Update, context: CallbackContext):
         text=USER_SELECTION_LANGUAGE_MESSAGE,
         reply_markup=kb
     )
+
+    update_user_state(user, UserStates.LANGUAGE_SELECTION_STATE)
