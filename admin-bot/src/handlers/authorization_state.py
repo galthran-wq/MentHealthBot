@@ -1,9 +1,9 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
-from .message_templates import WELCOME_MESSAGE
+from .message_templates import WELCOME_AUTH_MESSAGE
 
 
-def all_welcome(update: Update, context: CallbackContext):
+def authorization_state(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     client_id = "fedded7a-a595-424d-84d4-e43db36e945e"
     auth_button = InlineKeyboardButton(
@@ -14,6 +14,6 @@ def all_welcome(update: Update, context: CallbackContext):
 
     context.bot.send_message(
         chat_id=telegram_user.id,
-        text=WELCOME_MESSAGE,
+        text=WELCOME_AUTH_MESSAGE,
         reply_markup=kb
     )

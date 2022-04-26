@@ -7,7 +7,7 @@ from config import config
 import json
 import requests
 import jwt
-from models import db_client, User
+from models import User
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -15,15 +15,10 @@ app = FastAPI(
     version='1.0.0',
 )
 
-items = [['Получить VPN']]
-reply_markup = json.dumps(
-    {
-        "inline_keyboard": [
-            [{"text": "Далее", "callback_data": "auth_succesfull"}]
-        ]
-    }
-)
 TOKEN = config['telegram']['token']
+TELEGRAM_API = "https://api.telegram.org/bot{}/".format(TOKEN)
+BOT_URL = config['telegram']['url']
+
 
 @app.post('/')
 async def callback_auth(
@@ -31,39 +26,41 @@ async def callback_auth(
     token_type: str = Form(...),
     expires_in: int = Form(...),
     state: int = Form(...)
-    ):
+):
     data = jwt.decode(access_token, options={"verify_signature": False})
     chat_id = state
 
     if User.select().where(User.telegram_id == chat_id).exists():
-        return
+        # todo сделать так, чтобы активные заявки пользователя удалялись
+        pass
+    else:
+        user_dto = User(
+            telegram_id=chat_id,
+            hse_mail=data['email'],
+            first_name=data['given_name'],
+            last_name=data['family_name']
+        )
+        user_dto.save()
 
-    user_dto = User(
-        telegram_id = chat_id,
-        hse_mail=data['email'],
-        first_name=data['firstname'],
-        last_name=data['lastname']
-    )
-    user_dto.save()
+    text = """
+    Мы нашли твой вышкинский аккаунт!
+Пожалуйста, нажми кнопку <b>«Войти в бота»</b> для завершения регистрации.
+"""
 
-    text = f"""
-    Успешная авторизация!
-
-    Вас зовут: {data['commonname']}
-    Ваша почта: {data['email']}
-
-    <b>Пожалуйста выберите на клавиатуре кнопку 'Получить VPN'</b>
-    """
+    reply_markup = json.dumps({
+        "inline_keyboard": [
+            [{"text": "Войти в бота", "callback_data": "auth_succesfull"}]
+        ]
+    })
     try:
-        TELEGRAM_API = "https://api.telegram.org/bot{}/".format(TOKEN)
-        url = TELEGRAM_API
-        + "sendMessage?text={}&chat_id={}&parse_mode=HTML".format(text, chat_id)
+        url = TELEGRAM_API + \
+            f"sendMessage?text={text}&chat_id={chat_id}&parse_mode=HTML"
         if reply_markup:
-            url += "&reply_markup={}".format(reply_markup)
+            url += f"&reply_markup={reply_markup}"
         requests.get(url)
     except Exception as e:
         print(e)
-    return RedirectResponse(url='https://t.me/MentalHealthHseTestBot')
+    return RedirectResponse(url=BOT_URL)
 
 
 if __name__ == '__main__':

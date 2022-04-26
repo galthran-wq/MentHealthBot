@@ -1,0 +1,14 @@
+fastapi:
+  debug: true
+  port: 9097
+
+db:
+  HOST: 'localhost'
+  PORT: 5435
+  USER: mental_user
+  PASSWORD: password
+  DATABASE_NAME: mental_db
+
+telegram:
+  token: 5189843900:AAHOIbYypeOFuDE5WzxRdjlDxbOf6PsZLy0
+  url: https://t.me/test_all_this_fucking_shit_bot
