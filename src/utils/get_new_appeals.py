@@ -15,4 +15,3 @@ def get_new_appeals() -> list[(str, int)]:
         return new_appeals
     else:
         return []
-        
