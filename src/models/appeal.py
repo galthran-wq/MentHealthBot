@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, Message
 from .user import User
 from .datetime_utils import now
 from .base_model import BaseModel
@@ -26,6 +26,13 @@ class Appeal(BaseModel):
             patient=user.id,
             problems=[],
             message_id=update.callback_query.message.message_id
+        )
+
+    def from_message_and_user(message: Message, user: User) -> 'Appeal':
+        return Appeal(
+            patient=user.id,
+            problems=[],
+            message_id=message.message_id
         )
 
     class Meta:

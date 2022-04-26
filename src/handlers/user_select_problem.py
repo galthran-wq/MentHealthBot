@@ -28,15 +28,15 @@ def user_select_problem(update: Update, context: CallbackContext):
     check_state(user.state, [UserStates.SELECT_PROBLEM_STATE,
                              UserStates.FINISH_CONVERSATION_STATE])
 
-    create_appeal(update, user)
-
     kb = get_default_problem_keyboard()
 
-    context.bot.send_message(
+    msg = context.bot.send_message(
         chat_id=telegram_user.id,
         text=SELECT_PROBLEM_MESSAGE,
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb
     )
+
+    create_appeal(msg, user)
 
     update_user_state(user, UserStates.SELECT_PROBLEM_STATE)
