@@ -1,8 +1,8 @@
-from telegram import User
-from models import Appeal
+from telegram import Update
+from models import Appeal, User
 
 
-def create_appeal(telegram_user: User) -> Appeal:
-    appeal = Appeal.from_telegram_user(telegram_user)
+def create_appeal(update: Update, user: User) -> Appeal:
+    appeal = Appeal.from_update_and_user(update, user)
     appeal.save()
     return appeal

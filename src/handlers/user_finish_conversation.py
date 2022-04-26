@@ -4,15 +4,15 @@ from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 from utils.check_state import check_state
-from utils.find_appeal_by_user_id import find_appeal_by_user_id
+from utils.find_appeal_by_user_id import find_appeal_by_update_and_user
 from utils.find_user import find_user
 from utils.update_user_state import update_user_state
 
 from .message_templates import FINISH_CONVERSATION_MESSAGE
 
 
-def update_appeal(user: User):
-    appeal = find_appeal_by_user_id(user)
+def update_appeal(update: Update, user: User):
+    appeal = find_appeal_by_update_and_user(update, user)
     appeal.active = False
     appeal.save(only=[Appeal.active])
 
@@ -22,7 +22,7 @@ def user_finish_conversation(update: Update, context: CallbackContext):
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.PUBLIC_AWAITING_APPROVE_STATE,
                              UserStates.ANON_AWAITING_APPROVE_STATE])
-    update_appeal(user)   
+    update_appeal(update, user)
 
     share_problem_buttons = [InlineKeyboardButton(
                                 text="Поделиться проблемой",

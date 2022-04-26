@@ -5,16 +5,16 @@ from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 from utils.check_state import check_state
-from utils.find_appeal_by_user_id import find_appeal_by_user_id
+from utils.find_appeal_by_user_id import find_appeal_by_update_and_user
 from utils.find_user import find_user
 from utils.update_user_state import update_user_state
 
 from .message_templates import SELECT_CONNECTION_MESSAGE
 
 
-def update_appeal(user: User, callback: Update.CALLBACK_QUERY):
-    appeal = find_appeal_by_user_id(user)
-    lang = search(r"set_(?P<lang>\w+)_lang_button", callback.data)
+def update_appeal(update: Update, user: User):
+    appeal = find_appeal_by_update_and_user(update, user)
+    lang = search(r"set_(?P<lang>\w+)_lang_button", update.callback_query.data)
     lang = lang.group("lang")
     appeal.language = lang
     appeal.save(only=[Appeal.language])
@@ -40,7 +40,7 @@ def user_select_connection(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.LANGUAGE_SELECTION_STATE])
-    update_appeal(user, update.callback_query)
+    update_appeal(update, user)
 
     kb = make_keyboard()
 
@@ -49,5 +49,5 @@ def user_select_connection(update: Update, context: CallbackContext):
         text=SELECT_CONNECTION_MESSAGE,
         reply_markup=kb
     )
-    
+
     update_user_state(user, UserStates.SELECT_CONNECTION_STATE)

@@ -1,9 +1,9 @@
-from telegram import User as TelegramUser
+from telegram import Update
 from .user import User
 from .datetime_utils import now
 from .base_model import BaseModel
 from playhouse.postgres_ext import (
-    ForeignKeyField, CharField, BooleanField, DateTimeTZField, ArrayField
+    ForeignKeyField, CharField, BooleanField, DateTimeTZField, ArrayField, BigIntegerField
 )
 
 
@@ -19,11 +19,13 @@ class Appeal(BaseModel):
     language = CharField(null=True)
     problems = ArrayField(CharField)
     active = BooleanField(default=True)
+    message_id = BigIntegerField()
 
-    def from_telegram_user(user: TelegramUser) -> 'Appeal':
+    def from_update_and_user(update: Update, user: User) -> 'Appeal':
         return Appeal(
             patient=user.id,
-            problems=[]
+            problems=[],
+            message_id=update.callback_query.message.message_id
         )
 
     class Meta:

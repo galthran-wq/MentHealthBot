@@ -28,7 +28,7 @@ def user_select_problem(update: Update, context: CallbackContext):
     check_state(user.state, [UserStates.SELECT_PROBLEM_STATE,
                              UserStates.FINISH_CONVERSATION_STATE])
 
-    create_appeal(user)
+    create_appeal(update, user)
 
     kb = get_default_problem_keyboard()
 
