@@ -47,7 +47,10 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     kb = make_keyboard(appeal)
     name = " ".join([patient.first_name, patient.last_name])
     problems = make_problems_list(appeal.problems)
-    conn_type = CONNECTION_TYPES[appeal.connection_type]
+    try:
+        conn_type = CONNECTION_TYPES[appeal.connection_type]
+    except KeyError:
+        conn_type = "способ не указан"
 
     context.bot.send_message(
         chat_id=telegram_user.id,

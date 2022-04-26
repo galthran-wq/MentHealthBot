@@ -24,7 +24,7 @@ def add_admin_start(update: Update, context: CallbackContext):
 def add_admin(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user_by_telegram_user(telegram_user)
-    admin_username = update.message.text[1:]
+    admin_username = update.message.text
 
     if make_user_an_admin_by_email(admin_username) is True:
         context.bot.send_message(

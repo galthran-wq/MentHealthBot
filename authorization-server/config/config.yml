@@ -10,5 +10,7 @@ db:
   DATABASE_NAME: mental_db
 
 telegram:
-  token: 5189843900:AAHOIbYypeOFuDE5WzxRdjlDxbOf6PsZLy0
-  url: https://t.me/test_all_this_fucking_shit_bot
+  admin_token: 5348719511:AAGC2xUJPQjeWwUNVz1p_6bAUdXitiZzI-s
+  admin_url: https://t.me/hse_emotional_support_admin_bot
+  client_token: 5210094392:AAE2N-6JxgmBBwZ_q6iCToPquK8t5yNZQyU
+  client_url: https://t.me/hse_emotional_support_bot

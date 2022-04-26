@@ -15,9 +15,8 @@ app = FastAPI(
     version='1.0.0',
 )
 
-TOKEN = config['telegram']['token']
-TELEGRAM_API = "https://api.telegram.org/bot{}/".format(TOKEN)
-BOT_URL = config['telegram']['url']
+CLIENT_TOKEN = config['telegram']['client_token']
+ADMIN_TOKEN = config['telegram']['admin_token']
 
 
 @app.post('/')
@@ -28,7 +27,18 @@ async def callback_auth(
     state: int = Form(...)
 ):
     data = jwt.decode(access_token, options={"verify_signature": False})
-    chat_id = state
+    chat_id = state//10
+    bot = state%10
+    if bot == 1:
+        TELEGRAM_API = "https://api.telegram.org/bot{}/".format(ADMIN_TOKEN)
+        BOT_URL = config['telegram']['admin_url']
+    elif bot == 0:
+        TELEGRAM_API = "https://api.telegram.org/bot{}/".format(CLIENT_TOKEN)
+        BOT_URL = config['telegram']['client_url']
+    else:
+        print("Bot id error.")
+        return
+
 
     if User.select().where(User.telegram_id == chat_id).exists():
         user_id = User.select().where(User.telegram_id == chat_id).get().id
