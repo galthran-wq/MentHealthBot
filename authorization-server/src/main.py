@@ -7,7 +7,7 @@ from config import config
 import json
 import requests
 import jwt
-from models import User
+from models import User, Appeal
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -31,8 +31,10 @@ async def callback_auth(
     chat_id = state
 
     if User.select().where(User.telegram_id == chat_id).exists():
-        # todo сделать так, чтобы активные заявки пользователя удалялись
-        pass
+        user_id = User.select().where(User.telegram_id == chat_id).get().id
+        for appeal in Appeal.select().where((Appeal.patient == user_id) & (Appeal.active)):
+            appeal.active = False
+            appeal.save(only=[Appeal.active])
     else:
         user_dto = User(
             telegram_id=chat_id,
