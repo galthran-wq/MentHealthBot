@@ -9,8 +9,9 @@ from utils.find_appeal_by_user_id import find_appeal_by_update_and_user
 from utils.find_user import find_user
 
 
-def get_problem_keyboard(user_problems: list[Problem], appeal: Appeal) -> InlineKeyboardMarkup:
+def get_problem_keyboard(appeal: Appeal) -> InlineKeyboardMarkup:
     buttons = []
+    user_problems = appeal.problems
     for problem in Problems:
         buttons.append(InlineKeyboardButton(
             text=("☑️ " if problem.value.short in user_problems else "⬛ ") +
@@ -40,5 +41,5 @@ def user_change_problem(update: Update, context: CallbackContext):
         appeal.problems.append(problem)
     appeal.save()
 
-    kb = get_problem_keyboard(appeal.problems)
+    kb = get_problem_keyboard(appeal)
     update.callback_query.edit_message_reply_markup(kb)
