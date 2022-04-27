@@ -13,9 +13,9 @@ from .message_templates import SELECT_CONNECTION_MESSAGE
 
 
 def update_appeal(update: Update, user: User):
-    lang = search(r"(?P<message_id>[0-9]+.)_set_(?P<lang>\w+)_lang_button", update.callback_query.data)
-    lang = lang.group("lang")
-    message_id = lang.group("message_id")
+    r = search(r"(?P<message_id>[0-9]+.)_set_(?P<lang>\w+)_lang_button", update.callback_query.data)
+    lang = r.group("lang")
+    message_id = r.group("message_id")
     appeal = find_appeal_by_message_id_and_user(message_id, user)
     appeal.language = lang
     appeal.save(only=[Appeal.language])

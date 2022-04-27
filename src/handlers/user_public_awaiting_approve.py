@@ -13,9 +13,9 @@ from .message_templates import PUBLIC_AWAITING_APPROVE_MESSAGE
 
 
 def update_appeal(update: Update, user: User):
-    conn = search(r"(?P<message_id>[0-9]+.)_(?P<type>\w+)_connection_type_button", update.callback_query.data)
-    conn = conn.group("type")
-    message_id = conn.group("message_id")
+    r = search(r"(?P<message_id>[0-9]+.)_(?P<type>\w+)_connection_type_button", update.callback_query.data)
+    conn = r.group("type")
+    message_id = r.group("message_id")
     appeal = find_appeal_by_message_id_and_user(message_id, user)
     appeal.connection_type = conn
     appeal.save(only=[Appeal.connection_type])
