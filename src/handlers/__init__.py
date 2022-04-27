@@ -57,12 +57,12 @@ HANDLERS = [
 
     CallbackQueryHandler(
         user_select_language,
-        pattern=r"^done_selecting_problems_button$"
+        pattern=r"^.+_done_selecting_problems_button$"
     ),
 
     CallbackQueryHandler(
         user_select_connection,
-        pattern=r"set_.+_lang_button"
+        pattern=r".+_set_.+_lang_button"
     ),
 
     CallbackQueryHandler(
@@ -73,7 +73,7 @@ HANDLERS = [
     # ToDo: If the user don't click to cancel_appeal_button???
     CallbackQueryHandler(
         user_finish_conversation,
-        pattern=r"^cancel_appeal_button$"
+        pattern=r"^.+_cancel_appeal_button$"
     ),
 
     CallbackQueryHandler(

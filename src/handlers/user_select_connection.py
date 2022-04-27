@@ -5,7 +5,7 @@ from states import UserStates
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 from utils.check_state import check_state
-from utils.find_appeal_by_user_id import find_appeal_by_update_and_user
+from utils.find_appeal_by_message_id_and_user import find_appeal_by_message_id_and_user
 from utils.find_user import find_user
 from utils.update_user_state import update_user_state
 
@@ -13,24 +13,25 @@ from .message_templates import SELECT_CONNECTION_MESSAGE
 
 
 def update_appeal(update: Update, user: User):
-    appeal = find_appeal_by_update_and_user(update, user)
-    lang = search(r"set_(?P<lang>\w+)_lang_button", update.callback_query.data)
+    lang = search(r"(?P<message_id>[0-9]+.)_set_(?P<lang>\w+)_lang_button", update.callback_query.data)
     lang = lang.group("lang")
+    message_id = lang.group("message_id")
+    appeal = find_appeal_by_message_id_and_user(message_id, user)
     appeal.language = lang
     appeal.save(only=[Appeal.language])
 
 
-def make_keyboard() -> InlineKeyboardMarkup:
+def make_keyboard(message_id) -> InlineKeyboardMarkup:
     connection_type_button = [
         InlineKeyboardButton(
             text="Личное (очное) общение",
-            callback_data="personal_connection_type_button"),
+            callback_data=f"{message_id}_personal_connection_type_button"),
         InlineKeyboardButton(
             text="Онлайн-общение (Zoom/Skype)",
-            callback_data="online_connection_type_button"),
+            callback_data=f"{message_id}_online_connection_type_button"),
         InlineKeyboardButton(
             text="Переписка",
-            callback_data="chat_connection_type_button")
+            callback_data=f"{message_id}_chat_connection_type_button")
     ]
     kb = InlineKeyboardMarkup([[*connection_type_button]])
     return kb
@@ -42,7 +43,8 @@ def user_select_connection(update: Update, context: CallbackContext):
     check_state(user.state, [UserStates.LANGUAGE_SELECTION_STATE])
     update_appeal(update, user)
 
-    kb = make_keyboard()
+    message_id = update.callback_query.data.split('_')[0]
+    kb = make_keyboard(message_id)
 
     context.bot.send_message(
         chat_id=telegram_user.id,

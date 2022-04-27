@@ -1,4 +1,5 @@
 from re import search
+from models.appeal import Appeal
 from models.problems import Problems, Problem
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
@@ -8,7 +9,7 @@ from utils.find_appeal_by_user_id import find_appeal_by_update_and_user
 from utils.find_user import find_user
 
 
-def get_problem_keyboard(user_problems: list[Problem]) -> InlineKeyboardMarkup:
+def get_problem_keyboard(user_problems: list[Problem], appeal: Appeal) -> InlineKeyboardMarkup:
     buttons = []
     for problem in Problems:
         buttons.append(InlineKeyboardButton(
@@ -18,7 +19,7 @@ def get_problem_keyboard(user_problems: list[Problem]) -> InlineKeyboardMarkup:
         ))
     if user_problems:
         buttons.append(InlineKeyboardButton(
-            text="На следующий шаг", callback_data="done_selecting_problems_button"))
+            text="На следующий шаг", callback_data=f"{appeal.message_id}_done_selecting_problems_button"))
     kb = InlineKeyboardMarkup([[btn] for btn in buttons])
     return kb
 
