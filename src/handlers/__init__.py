@@ -25,7 +25,7 @@ HANDLERS = [
     # todo: change name of the button after @olex1313 will set up authorization server
     CallbackQueryHandler(
         authorized_user_router,
-        pattern="auth_succesfull"
+        pattern=r"^auth_succesfull_.+$"
     ),
 
     MessageHandler(

@@ -27,8 +27,8 @@ async def callback_auth(
     state: int = Form(...)
 ):
     data = jwt.decode(access_token, options={"verify_signature": False})
-    chat_id = state//10
-    bot = state%10
+    chat_id = state // 10
+    bot = state % 10
     if bot == 1:
         TELEGRAM_API = "https://api.telegram.org/bot{}/".format(ADMIN_TOKEN)
         BOT_URL = config['telegram']['admin_url']
@@ -39,13 +39,7 @@ async def callback_auth(
         print("Bot id error.")
         return
 
-
-    if User.select().where(User.telegram_id == chat_id).exists():
-        user_id = User.select().where(User.telegram_id == chat_id).get().id
-        for appeal in Appeal.select().where((Appeal.patient == user_id) & (Appeal.active)):
-            appeal.active = False
-            appeal.save(only=[Appeal.active])
-    else:
+    if not User.select().where(User.telegram_id == chat_id).exists():
         user_dto = User(
             telegram_id=chat_id,
             hse_mail=data['email'],
@@ -64,14 +58,23 @@ async def callback_auth(
             [{"text": "Войти в бота", "callback_data": "auth_succesfull"}]
         ]
     })
+
     try:
         url = TELEGRAM_API + \
-            f"sendMessage?text={text}&chat_id={chat_id}&parse_mode=HTML"
-        if reply_markup:
-            url += f"&reply_markup={reply_markup}"
-        requests.get(url)
+            f"sendMessage?text={text}&chat_id={chat_id}&parse_mode=HTML&reply_markup={reply_markup}"
+        raw = requests.get(url)
+        msg_id = raw.json()['result']['message_id']
+        reply_markup = json.dumps({
+            "inline_keyboard": [
+                [{"text": "Войти в бота", "callback_data": f"auth_succesfull_{msg_id}"}]
+            ]
+        })
+        url = TELEGRAM_API + \
+            f"/editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={reply_markup}"
+        raw = requests.get(url)
     except Exception as e:
         print(e)
+        return
     return RedirectResponse(url=BOT_URL)
 
 
