@@ -7,7 +7,7 @@ from config import config
 import json
 import requests
 import jwt
-from models import User, Appeal
+from models import User
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -44,9 +44,15 @@ async def callback_auth(
             telegram_id=chat_id,
             hse_mail=data['email'],
             first_name=data['given_name'],
-            last_name=data['family_name']
+            last_name=data['family_name'],
+            state="Authorization"
         )
         user_dto.save()
+    else:
+        user = User.get(User.telegram_id == chat_id)
+        user.state = "Authorization"
+        user.save(only=[User.state])
+
 
     text = """
     Мы нашли твой вышкинский аккаунт!
@@ -70,8 +76,8 @@ async def callback_auth(
             ]
         })
         url = TELEGRAM_API + \
-            f"/editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={reply_markup}"
-        raw = requests.get(url)
+            f"editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={reply_markup}"
+        requests.get(url)
     except Exception as e:
         print(e)
         return

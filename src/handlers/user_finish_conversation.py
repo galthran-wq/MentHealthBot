@@ -19,6 +19,7 @@ def update_appeal(update: Update, user: User):
 
 
 def user_finish_conversation(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.PUBLIC_AWAITING_APPROVE_STATE,

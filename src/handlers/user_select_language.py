@@ -21,6 +21,7 @@ def make_keyboard(message_id) -> InlineKeyboardMarkup:
 
 
 def user_select_language(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.SELECT_PROBLEM_STATE])

@@ -45,6 +45,7 @@ def make_keyboard() -> InlineKeyboardMarkup:
 
 
 def doctor_take_appeal(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     therapist = find_user(telegram_user)
     check_state(therapist.state, [UserStates.EXAMINE_APPEAL_STATE])
