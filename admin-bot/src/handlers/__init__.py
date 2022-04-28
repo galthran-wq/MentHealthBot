@@ -4,6 +4,7 @@ from .delete_doctor import delete_doctor_start, delete_doctor
 from .doctor_list import doctor_list
 from .add_admin import add_admin, add_admin_start
 from .delete_admin import delete_admin, delete_admin_start
+from .admin_list import admin_list
 from .back import back
 from .help import help
 from .authorization_state import authorization_state
@@ -63,5 +64,9 @@ HANDLERS = [
     CommandHandler(
         'delete_admin',
         delete_admin_start
+    ),
+    CommandHandler(
+        'admin_list',
+        admin_list
     )
 ]
