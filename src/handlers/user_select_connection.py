@@ -24,13 +24,13 @@ def update_appeal(update: Update, user: User):
 def make_keyboard(message_id) -> InlineKeyboardMarkup:
     connection_type_button = [
         InlineKeyboardButton(
-            text="Личное (очное) общение",
+            text="Очная встреча",
             callback_data=f"{message_id}_personal_connection_type_button"),
         InlineKeyboardButton(
-            text="Онлайн-общение (Zoom/Skype)",
+            text="Zoom/Skype",
             callback_data=f"{message_id}_online_connection_type_button"),
         InlineKeyboardButton(
-            text="Переписка",
+            text="Чат",
             callback_data=f"{message_id}_chat_connection_type_button")
     ]
     kb = InlineKeyboardMarkup([[*connection_type_button]])
@@ -38,6 +38,7 @@ def make_keyboard(message_id) -> InlineKeyboardMarkup:
 
 
 def user_select_connection(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.LANGUAGE_SELECTION_STATE])

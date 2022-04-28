@@ -7,7 +7,7 @@ from config import config
 import json
 import requests
 import jwt
-from models import User, Appeal
+from models import User
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -30,23 +30,38 @@ async def callback_auth(
     chat_id = state // 10
     bot = state % 10
     if bot == 1:
-        TELEGRAM_API = "https://api.telegram.org/bot{}/".format(ADMIN_TOKEN)
+        TELEGRAM_API = f"https://api.telegram.org/bot{ADMIN_TOKEN}/"
         BOT_URL = config['telegram']['admin_url']
     elif bot == 0:
-        TELEGRAM_API = "https://api.telegram.org/bot{}/".format(CLIENT_TOKEN)
+        TELEGRAM_API = f"https://api.telegram.org/bot{CLIENT_TOKEN}/"
         BOT_URL = config['telegram']['client_url']
     else:
         print("Bot id error.")
         return
 
-    if not User.select().where(User.telegram_id == chat_id).exists():
-        user_dto = User(
+    if User.select().where(User.telegram_id == chat_id).exists():
+        user = User.get(User.telegram_id == chat_id)
+        user.state = "Authorization"
+        user.save(only=[User.state])
+    elif User.select().where((User.hse_mail == data['email']) & (User.telegram_id == -1)).exists():
+        user = User.get(User.hse_mail == data['email'])
+        user.telegram_id = chat_id
+        user.hse_mail=data['email']
+        user.first_name=data['given_name']
+        user.last_name=data['family_name']
+        user.state="Authorization"
+        user.save()
+    else:
+        user = User(
             telegram_id=chat_id,
             hse_mail=data['email'],
             first_name=data['given_name'],
-            last_name=data['family_name']
+            last_name=data['family_name'],
+            state="Authorization"
         )
-        user_dto.save()
+        user.save()
+        
+
 
     text = """
     Мы нашли твой вышкинский аккаунт!
@@ -70,8 +85,8 @@ async def callback_auth(
             ]
         })
         url = TELEGRAM_API + \
-            f"/editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={reply_markup}"
-        raw = requests.get(url)
+            f"editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={reply_markup}"
+        requests.get(url)
     except Exception as e:
         print(e)
         return

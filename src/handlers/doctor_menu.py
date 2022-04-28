@@ -9,9 +9,11 @@ from utils.update_user_state import update_user_state
 
 
 def doctor_menu(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, [UserStates.DOCTOR_MENU_STATE,
+    check_state(user.state, ["Authorization",
+                             UserStates.DOCTOR_MENU_STATE,
                              UserStates.SELECT_APPEAL_STATE,
                              UserStates.TAKE_APPEAL_STATE])
     new_appeals = len(get_new_appeals())
