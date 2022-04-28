@@ -13,12 +13,37 @@ from .message_templates import SELECT_CONNECTION_MESSAGE
 
 
 def update_appeal(update: Update, user: User):
-    r = search(r"(?P<message_id>[0-9]+.)_set_(?P<lang>\w+)_lang_button", update.callback_query.data)
+    r = search(
+        r"(?P<message_id>[0-9]+.)_set_(?P<lang>\w+)_lang_button", update.callback_query.data)
     lang = r.group("lang")
     message_id = r.group("message_id")
     appeal = find_appeal_by_message_id_and_user(message_id, user)
     appeal.language = lang
     appeal.save(only=[Appeal.language])
+
+
+def update_message(update: Update):
+    r = search(
+        r"(?P<message_id>[0-9]+.)_set_(?P<lang>\w+)_lang_button", update.callback_query.data)
+    lang = r.group("lang")
+    language_buttons = []
+    if lang == "russian":
+        language_buttons = [InlineKeyboardButton(
+            text="☑️ Русский",
+            callback_data="set_russian_lang_button"),
+            InlineKeyboardButton(
+            text="Английский",
+            callback_data="set_english_lang_button")]
+    elif lang == "english":
+        language_buttons = [InlineKeyboardButton(
+            text="Русский",
+            callback_data="set_russian_lang_button"),
+            InlineKeyboardButton(
+            text="☑️ Английский",
+            callback_data="set_english_lang_button")]
+    if language_buttons:
+        kb = InlineKeyboardMarkup([[*language_buttons]])
+        update.callback_query.edit_message_reply_markup(kb)
 
 
 def make_keyboard(message_id) -> InlineKeyboardMarkup:
@@ -43,6 +68,7 @@ def user_select_connection(update: Update, context: CallbackContext):
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.LANGUAGE_SELECTION_STATE])
     update_appeal(update, user)
+    update_message(update)
 
     message_id = update.callback_query.data.split('_')[0]
     kb = make_keyboard(message_id)
