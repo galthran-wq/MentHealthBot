@@ -85,14 +85,14 @@ async def callback_auth(
         }
 
 
-        raw = await send_message(text=text, chat_id=state, token=TG_TOKEN, reply_markup=reply_markup)
+        raw = await send_message(text=text, chat_id=chat_id, token=TG_TOKEN, reply_markup=reply_markup)
         msg_id = raw.json()['result']['message_id']
         reply_markup ={
             "inline_keyboard": [
                 [{"text": "Войти в бота", "callback_data": f"auth_succesfull_{msg_id}"}]
             ]
         }
-        await send_message(text=text, chat_id=state, token=TG_TOKEN, reply_markup=reply_markup)
+        await send_message(text=text, chat_id=chat_id, token=TG_TOKEN, reply_markup=reply_markup)
     except Exception as e:
         print(e)
         return
