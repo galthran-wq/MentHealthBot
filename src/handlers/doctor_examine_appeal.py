@@ -1,5 +1,6 @@
 from re import search
 from models.connection_types import CONNECTION_TYPES
+from models.languages import LANGUAGES
 from models.problems import Problems
 from models import Appeal
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
@@ -52,10 +53,14 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
         conn_type = CONNECTION_TYPES[appeal.connection_type]
     except KeyError:
         conn_type = "способ не указан"
+    try:
+        lang = LANGUAGES[appeal.language]
+    except KeyError:
+        lang = "язык не указан"
 
     context.bot.send_message(
         chat_id=telegram_user.id,
-        text=MESSAGE.format(name, problems, conn_type),
+        text=MESSAGE.format(name, problems, conn_type, lang),
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb
     )

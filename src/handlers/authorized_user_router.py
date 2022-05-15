@@ -5,6 +5,7 @@ from telegram.ext import CallbackContext
 from utils.check_state import check_state
 from utils.find_user import find_user
 
+from models import User
 from handlers.message_templates import (WELCOME_DOCTOR_MESSAGE,
                                         WELCOME_PATIENT_MESSAGE)
 
@@ -23,6 +24,9 @@ def authorized_user_router(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, ["Authorization"])
+    
+    user.telegram_username = update.effective_user.username
+    user.save(only=[User.telegram_username])
 
     delete_previous_message(update, context)
 

@@ -3,4 +3,4 @@ from models import User
 
 
 def find_all_doctor() -> Node:
-    return User.select().where(User.therapist == True)
+    return User.select().where(User.therapist == True).order_by(User.hse_mail)

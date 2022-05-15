@@ -43,7 +43,7 @@ async def callback_auth(
         user = User.get(User.telegram_id == chat_id)
         user.state = "Authorization"
         user.save(only=[User.state])
-    elif User.select().where((User.hse_mail == data['email']) & (User.telegram_id == -1)).exists():
+    elif User.select().where((User.hse_mail == data['email']) & (User.telegram_id < 0)).exists():
         user = User.get(User.hse_mail == data['email'])
         user.telegram_id = chat_id
         user.hse_mail=data['email']
