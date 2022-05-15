@@ -4,10 +4,9 @@ import uvicorn
 from fastapi import FastAPI, Form
 from starlette.responses import RedirectResponse
 from config import config
-import json
-import requests
 import jwt
 from models import User
+from utils import send_message, get_jwks
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -26,14 +25,24 @@ async def callback_auth(
     expires_in: int = Form(...),
     state: int = Form(...)
 ):
-    data = jwt.decode(access_token, options={"verify_signature": False})
+    jwks = await get_jwks()
+    kid = jwt.get_unverified_header(access_token)['kid']
+    data = jwt.decode(access_token,
+                        key=jwks[kid],
+                        algorithms=['RS256'],
+                        audience='microsoft:identityserver:'+config['oauth']['appid'])
+    if data['email'].split('@')[-1] not in ('edu.hse.ru', 'hse.ru'):
+            text = 'Ваша почта должна быть в домене @edu.hse.ru или @hse.ru'
+            markup = None
+            print(f"{state}: bad email {data['email']}")
+            raise ValueError
     chat_id = state // 10
     bot = state % 10
     if bot == 1:
-        TELEGRAM_API = f"https://api.telegram.org/bot{ADMIN_TOKEN}/"
+        TG_TOKEN = ADMIN_TOKEN
         BOT_URL = config['telegram']['admin_url']
     elif bot == 0:
-        TELEGRAM_API = f"https://api.telegram.org/bot{CLIENT_TOKEN}/"
+        TG_TOKEN = CLIENT_TOKEN
         BOT_URL = config['telegram']['client_url']
     else:
         print("Bot id error.")
@@ -60,7 +69,7 @@ async def callback_auth(
             state="Authorization"
         )
         user.save()
-        
+
 
 
     text = """
@@ -68,25 +77,21 @@ async def callback_auth(
 Пожалуйста, нажми кнопку <b>«Войти в бота»</b> для завершения регистрации.
 """
 
-    reply_markup = json.dumps({
+    reply_markup = {
         "inline_keyboard": [
             [{"text": "Войти в бота", "callback_data": "auth_succesfull"}]
         ]
-    })
+    }
 
     try:
-        url = TELEGRAM_API + \
-            f"sendMessage?text={text}&chat_id={chat_id}&parse_mode=HTML&reply_markup={reply_markup}"
-        raw = requests.get(url)
+        raw = await send_message(text=text, chat_id=state, token=TG_TOKEN, reply_markup=reply_markup)
         msg_id = raw.json()['result']['message_id']
-        reply_markup = json.dumps({
+        reply_markup ={
             "inline_keyboard": [
                 [{"text": "Войти в бота", "callback_data": f"auth_succesfull_{msg_id}"}]
             ]
-        })
-        url = TELEGRAM_API + \
-            f"editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={reply_markup}"
-        requests.get(url)
+        }
+        await send_message(text=text, chat_id=state, token=TG_TOKEN, reply_markup=reply_markup)
     except Exception as e:
         print(e)
         return

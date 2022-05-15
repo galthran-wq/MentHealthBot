@@ -14,3 +14,6 @@ telegram:
   admin_url: https://t.me/hse_emotional_support_admin_bot
   client_token: 5210094392:AAE2N-6JxgmBBwZ_q6iCToPquK8t5yNZQyU
   client_url: https://t.me/hse_emotional_support_bot
+
+oauth:
+  appid: fedded7a-a595-424d-84d4-e43db36e945e
