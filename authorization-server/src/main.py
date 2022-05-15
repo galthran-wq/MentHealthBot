@@ -6,7 +6,7 @@ from starlette.responses import RedirectResponse
 from config import config
 import jwt
 from models import User
-from utils import send_message, get_jwks
+from utils import send_message, get_jwks, edit_message_reply_markup
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -92,7 +92,7 @@ async def callback_auth(
                 [{"text": "Войти в бота", "callback_data": f"auth_succesfull_{msg_id}"}]
             ]
         }
-        await send_message(text=text, chat_id=chat_id, token=TG_TOKEN, reply_markup=reply_markup)
+        await edit_message_reply_markup(chat_id=chat_id, token=TG_TOKEN, reply_markup=reply_markup, msg_id=msg_id)
     except Exception as e:
         print(e)
         return

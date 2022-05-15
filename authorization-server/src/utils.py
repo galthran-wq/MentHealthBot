@@ -13,6 +13,12 @@ async def send_message(text: str, chat_id: int, token: str, reply_markup: dict =
     async with httpx.AsyncClient() as client:
         return await client.get(url)
 
+async def edit_message_reply_markup(chat_id: int, token: str, reply_markup: dict, msg_id: int):
+    TELEGRAM_API = f'https://api.telegram.org/bot{token}/'
+    url = TELEGRAM_API + f'editMessageReplyMarkup?chat_id={chat_id}&message_id={msg_id}&reply_markup={json.dumps(reply_markup)}'
+    async with httpx.AsyncClient() as client:
+        return await client.get(url)
+
 @alru_cache(maxsize=1)
 async def _get_jwks(ttl_hash):
     async with httpx.AsyncClient() as client:
