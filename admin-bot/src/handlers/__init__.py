@@ -4,16 +4,22 @@ from .delete_doctor import delete_doctor_start, delete_doctor
 from .doctor_list import doctor_list
 from .add_admin import add_admin, add_admin_start
 from .delete_admin import delete_admin, delete_admin_start
+from .admin_list import admin_list
 from .back import back
 from .help import help
+from .authorization_state import authorization_state
 from filters.state_filter import StateFilter
 from states import UserStates
-from telegram.ext import CommandHandler, MessageHandler
+from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
 
 HANDLERS = [
     CommandHandler(
         'start',
-        welcome_message
+        authorization_state
+    ),
+    CallbackQueryHandler(
+        welcome_message,
+        pattern="auth_succesfull"
     ),
     CommandHandler(
         'back',
@@ -58,5 +64,9 @@ HANDLERS = [
     CommandHandler(
         'delete_admin',
         delete_admin_start
+    ),
+    CommandHandler(
+        'admin_list',
+        admin_list
     )
 ]

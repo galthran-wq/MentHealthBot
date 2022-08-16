@@ -23,6 +23,7 @@ def make_keyboard() -> InlineKeyboardMarkup:
 
 
 def doctor_select_appeal(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.DOCTOR_MENU_STATE,

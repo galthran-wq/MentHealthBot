@@ -11,3 +11,6 @@ db:
 
 telegram:
   token: token
+
+oauth:
+  appid: fedded7a-a595-424d-84d4-e43db36e945e

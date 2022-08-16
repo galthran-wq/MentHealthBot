@@ -1,4 +1,4 @@
 ADD_DOCTOR_MESSAGE = """
-Введите тэг пользователя. Пример: @lapka
+Введите email пользователя. Пример: ischekanov@edu.hse.ru
 Для отмены команды введите /back
 """

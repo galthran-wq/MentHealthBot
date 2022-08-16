@@ -4,10 +4,9 @@ import uvicorn
 from fastapi import FastAPI, Form
 from starlette.responses import RedirectResponse
 from config import config
-import json
-import requests
 import jwt
-from models import db_client, User
+from models import User
+from utils import send_message, get_jwks, edit_message_reply_markup
 
 app = FastAPI(
     title='Digital Studsovet Mental Health Bot',
@@ -15,15 +14,9 @@ app = FastAPI(
     version='1.0.0',
 )
 
-items = [['Получить VPN']]
-reply_markup = json.dumps(
-    {
-        "inline_keyboard": [
-            [{"text": "Далее", "callback_data": "auth_succesfull"}]
-        ]
-    }
-)
-TOKEN = config['telegram']['token']
+CLIENT_TOKEN = config['telegram']['client_token']
+ADMIN_TOKEN = config['telegram']['admin_token']
+
 
 @app.post('/')
 async def callback_auth(
@@ -31,39 +24,79 @@ async def callback_auth(
     token_type: str = Form(...),
     expires_in: int = Form(...),
     state: int = Form(...)
-    ):
-    data = jwt.decode(access_token, options={"verify_signature": False})
-    chat_id = state
-
-    if User.select().where(User.telegram_id == chat_id).exists():
-        return
-
-    user_dto = User(
-        telegram_id = chat_id,
-        hse_mail=data['email'],
-        first_name=data['firstname'],
-        last_name=data['lastname']
-    )
-    user_dto.save()
-
-    text = f"""
-    Успешная авторизация!
-
-    Вас зовут: {data['commonname']}
-    Ваша почта: {data['email']}
-
-    <b>Пожалуйста выберите на клавиатуре кнопку 'Получить VPN'</b>
-    """
+):
     try:
-        TELEGRAM_API = "https://api.telegram.org/bot{}/".format(TOKEN)
-        url = TELEGRAM_API
-        + "sendMessage?text={}&chat_id={}&parse_mode=HTML".format(text, chat_id)
-        if reply_markup:
-            url += "&reply_markup={}".format(reply_markup)
-        requests.get(url)
+        jwks = await get_jwks()
+        kid = jwt.get_unverified_header(access_token)['kid']
+        data = jwt.decode(access_token,
+                            key=jwks[kid],
+                            algorithms=['RS256'],
+                            audience='microsoft:identityserver:'+config['oauth']['appid'])
+        if data['email'].split('@')[-1] not in ('edu.hse.ru', 'hse.ru'):
+                text = 'Ваша почта должна быть в домене @edu.hse.ru или @hse.ru'
+                markup = None
+                print(f"{state}: bad email {data['email']}")
+                raise ValueError
+        chat_id = state // 10
+        bot = state % 10
+        if bot == 1:
+            TG_TOKEN = ADMIN_TOKEN
+            BOT_URL = config['telegram']['admin_url']
+        elif bot == 0:
+            TG_TOKEN = CLIENT_TOKEN
+            BOT_URL = config['telegram']['client_url']
+        else:
+            print("Bot id error.")
+            return
+
+        if User.select().where(User.telegram_id == chat_id).exists():
+            user = User.get(User.telegram_id == chat_id)
+            user.state = "Authorization"
+            user.save(only=[User.state])
+        elif User.select().where((User.hse_mail == data['email']) & (User.telegram_id < 0)).exists():
+            user = User.get(User.hse_mail == data['email'])
+            user.telegram_id = chat_id
+            user.hse_mail=data['email']
+            user.first_name=data['given_name']
+            user.last_name=data['family_name']
+            user.state="Authorization"
+            user.save()
+        else:
+            user = User(
+                telegram_id=chat_id,
+                hse_mail=data['email'],
+                first_name=data['given_name'],
+                last_name=data['family_name'],
+                state="Authorization"
+            )
+            user.save()
+
+
+
+        text = """
+        Мы нашли твой вышкинский аккаунт!
+    Пожалуйста, нажми кнопку <b>«Войти в бота»</b> для завершения регистрации.
+    """
+
+        reply_markup = {
+            "inline_keyboard": [
+                [{"text": "Войти в бота", "callback_data": "auth_succesfull"}]
+            ]
+        }
+
+
+        raw = await send_message(text=text, chat_id=chat_id, token=TG_TOKEN, reply_markup=reply_markup)
+        msg_id = raw.json()['result']['message_id']
+        reply_markup ={
+            "inline_keyboard": [
+                [{"text": "Войти в бота", "callback_data": f"auth_succesfull_{msg_id}"}]
+            ]
+        }
+        await edit_message_reply_markup(chat_id=chat_id, token=TG_TOKEN, reply_markup=reply_markup, msg_id=msg_id)
     except Exception as e:
         print(e)
-    return RedirectResponse(url='https://t.me/MentalHealthHseTestBot')
+        return
+    return RedirectResponse(url=BOT_URL)
 
 
 if __name__ == '__main__':

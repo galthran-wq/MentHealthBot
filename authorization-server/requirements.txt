@@ -31,3 +31,6 @@ tzdata==2022.1
 tzlocal==4.2
 urllib3==1.26.9
 uvicorn==0.17.6
+httpx==0.22.0
+PyJWT==2.3.0
+async-lru==1.0.2

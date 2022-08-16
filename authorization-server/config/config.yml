@@ -1,0 +1,19 @@
+fastapi:
+  debug: true
+  port: 9097
+
+db:
+  HOST: 'localhost'
+  PORT: 5435
+  USER: mental_user
+  PASSWORD: password
+  DATABASE_NAME: mental_db
+
+telegram:
+  admin_token: 5348719511:AAGC2xUJPQjeWwUNVz1p_6bAUdXitiZzI-s
+  admin_url: https://t.me/hse_emotional_support_admin_bot
+  client_token: 5210094392:AAE2N-6JxgmBBwZ_q6iCToPquK8t5yNZQyU
+  client_url: https://t.me/hse_emotional_support_bot
+
+oauth:
+  appid: fedded7a-a595-424d-84d4-e43db36e945e

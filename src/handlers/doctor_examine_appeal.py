@@ -1,5 +1,6 @@
 from re import search
 from models.connection_types import CONNECTION_TYPES
+from models.languages import LANGUAGES
 from models.problems import Problems
 from models import Appeal
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
@@ -36,6 +37,7 @@ def make_keyboard(appeal: Appeal) -> InlineKeyboardMarkup:
 
 
 def doctor_examine_appeal(update: Update, context: CallbackContext):
+    update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     check_state(user.state, [UserStates.SELECT_APPEAL_STATE])
@@ -47,11 +49,18 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     kb = make_keyboard(appeal)
     name = " ".join([patient.first_name, patient.last_name])
     problems = make_problems_list(appeal.problems)
-    conn_type = CONNECTION_TYPES[appeal.connection_type]
+    try:
+        conn_type = CONNECTION_TYPES[appeal.connection_type]
+    except KeyError:
+        conn_type = "способ не указан"
+    try:
+        lang = LANGUAGES[appeal.language]
+    except KeyError:
+        lang = "язык не указан"
 
     context.bot.send_message(
         chat_id=telegram_user.id,
-        text=MESSAGE.format(name, problems, conn_type),
+        text=MESSAGE.format(name, problems, conn_type, lang),
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb
     )

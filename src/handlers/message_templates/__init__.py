@@ -5,3 +5,4 @@ from .user_selection_language_message import USER_SELECTION_LANGUAGE_MESSAGE
 from .select_connection_message import SELECT_CONNECTION_MESSAGE
 from .public_awaiting_approve_message import PUBLIC_AWAITING_APPROVE_MESSAGE
 from .finish_conversation_message import FINISH_CONVERSATION_MESSAGE
+from .deleted_previous_appeals_message import DELETED_PREVIOUS_APPEALS_MESSAGE

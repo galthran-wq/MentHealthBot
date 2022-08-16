@@ -15,7 +15,7 @@ def doctor_list(update: Update, context: CallbackContext):
     doctors = find_all_doctor()
     doctor_list_text = 'Список волонтеров:\n'
     for doctor in doctors:
-        doctor_list_text += '@{}\n'.format(doctor.get().telegram_username)
+        doctor_list_text += '{}\n'.format(doctor.hse_mail)
     if len(doctors) > 0:
         context.bot.send_message(
             chat_id=telegram_user.id,
