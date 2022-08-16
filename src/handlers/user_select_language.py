@@ -13,7 +13,7 @@ def make_keyboard() -> InlineKeyboardMarkup:
                             text="Русский", 
                             callback_data="set_russian_lang_button"),
                         InlineKeyboardButton(
-                            text="Английский", 
+                            text="English", 
                             callback_data="set_english_lang_button")]
     kb = InlineKeyboardMarkup([[*language_buttons]])
     return kb
