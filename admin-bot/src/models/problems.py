@@ -8,7 +8,7 @@ class Problem():
 
 
 class Problems(Enum):
-    TIRED = Problem("Выгорание и переутомление", "tired_problem_button")
+    TIRED = Problem("Выграние и переутомление", "tired_problem_button")
     DEPRESSIVE = Problem("Депрессивные состояния", "depressive_problem_button")
     SELF = Problem("Личные отношения", "self_problem_button")
     KIN = Problem("Проблемы с родственниками", "kin_problem_button")
