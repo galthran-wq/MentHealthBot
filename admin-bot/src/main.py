@@ -13,15 +13,4 @@ if __name__ == '__main__':
     for handler in HANDLERS:
         dispatcher.add_handler(handler)
 
-    if prod == "PROD":
-        updater.start_webhook(
-            listen="0.0.0.0",
-            port=webhook_port,
-            url_path=token,
-            webhook_url=webhook_url + token,
-            max_connections=100,
-        )
-    else:
-        updater.start_polling()
-
-    updater.idle()
+    updater.start_polling()
