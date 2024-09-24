@@ -23,12 +23,13 @@ def delete_previous_message(update: Update, context: CallbackContext):
 def authorized_user_router(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, ["Authorization"])
-    
-    user.telegram_username = update.effective_user.username
-    user.save(only=[User.telegram_username])
-
-    delete_previous_message(update, context)
+    if user is None:
+        user = User(
+            telegram_id=update.effective_user.id,
+            telegram_username=update.effective_user.username,
+            state="Authorization"
+        )
+        user.save()
 
     if user.therapist:
         callback_query = "doctor_menu_button"
@@ -42,7 +43,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
     else:
         callback_query = "create_appeal_button"
         message = WELCOME_PATIENT_MESSAGE.format(
-            user.first_name, user.last_name, user.hse_mail
+            user.telegram_username
         )
         next_button = InlineKeyboardButton(
             text="Создать новую заявку",
