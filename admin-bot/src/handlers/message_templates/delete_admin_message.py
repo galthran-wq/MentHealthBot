@@ -1,4 +1,4 @@
 DELETE_ADMIN_MESSAGE = """
-Введите email пользователя. Пример: ischekanov@edu.hse.ru
+Введите telegram username пользователя.
 Для отмены команды введите /back
 """
