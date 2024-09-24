@@ -14,14 +14,6 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
 
 HANDLERS = [
     CommandHandler(
-        'start',
-        authorization_state
-    ),
-    CallbackQueryHandler(
-        welcome_message,
-        pattern="auth_succesfull"
-    ),
-    CommandHandler(
         'back',
         back
     ),
