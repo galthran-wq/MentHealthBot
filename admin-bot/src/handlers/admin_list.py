@@ -14,7 +14,7 @@ def admin_list(update: Update, context: CallbackContext):
     admins = find_all_admin()
     admin_list_text = 'Список администраторов:\n'
     for admin in admins:
-        admin_list_text += '{}\n'.format(admin.hse_mail)
+        admin_list_text += '{}\n'.format(admin.telegram_username)
     if len(admins) > 0:
         context.bot.send_message(
             chat_id=telegram_user.id,
