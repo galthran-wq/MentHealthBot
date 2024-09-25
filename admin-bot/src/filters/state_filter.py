@@ -9,7 +9,7 @@ class StateFilter(MessageFilter):
         self.state = state
 
     def filter(self, message: Message) -> bool:
-        if (user := User.select().where(User.telegram_id == message.from_user.id)).exists():
+        if (user := User.select().where(User.telegram_username == message.from_user.username)).exists():
             user = user.get()
             return user.state == self.state
         else:
