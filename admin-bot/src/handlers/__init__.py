@@ -14,6 +14,10 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
 
 HANDLERS = [
     CommandHandler(
+        "start",
+        welcome_message
+    ),
+    CommandHandler(
         'back',
         back
     ),
