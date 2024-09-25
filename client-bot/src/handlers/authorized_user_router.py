@@ -1,3 +1,4 @@
+import logging
 from re import search
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -24,12 +25,16 @@ def authorized_user_router(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     if user is None:
+        logging.info(f"Didn't find a user for \"{user.telegram_username}\". Creating one...")
         user = User(
             telegram_id=update.effective_user.id,
             telegram_username=update.effective_user.username,
             state="Authorization"
         )
         user.save()
+        logging.info(f"Created User(id={user.id}, username={user.telegram_username}, id={user.telegram_id}, state={user.state})")
+    else:
+        logging.info(f"Found User(id={user.id}, username={user.telegram_username}, id={user.telegram_id}, state={user.state}, therapist={user.therapist}, admin={user.admin})")
 
     if user.therapist:
         callback_query = "doctor_menu_button"
@@ -41,6 +46,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
             callback_data=callback_query
         )
     else:
+        logging.info(f"Found User(id={user.id}, username={user.telegram_username}, id={user.telegram_id}, state={user.state})")
         callback_query = "create_appeal_button"
         message = WELCOME_PATIENT_MESSAGE.format(
             user.telegram_username

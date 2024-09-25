@@ -1,3 +1,6 @@
+import os
+import sys
+import logging
 from datetime import time, timedelta
 from decouple import config
 from telegram.ext import Updater
@@ -18,6 +21,13 @@ if __name__ == '__main__':
         timedelta(hours=12),
         # -3 because of Moscow timezone UTC+3
         time(hour=8-3)
+    )
+    os.makedirs("logs", exist_ok=True)
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=logging.INFO,
+        handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler("./logs/log")]
     )
 
     updater.start_polling()
