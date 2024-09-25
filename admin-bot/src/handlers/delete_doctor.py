@@ -6,7 +6,7 @@ from utils.find_user_by_telegram_user import find_user_by_telegram_user
 from states import UserStates
 from utils.user_by_telegram_username import user_by_telegram_username
 from .message_templates import DELETE_DOCTOR_MESSAGE, DELETE_DOCTOR_SUCCESS_MESSAGE, DELETE_DOCTOR_ERROR_MESSAGE
-from utils.delete_doctor_by_email import delete_doctor_by_email
+from utils.delete_doctor_by_email import delete_doctor_by_email, delete_doctor_by_telegram_username
 
 
 def delete_doctor_start(update: Update, context: CallbackContext):
@@ -26,7 +26,7 @@ def delete_doctor(update: Update, context: CallbackContext):
     user = find_user_by_telegram_user(telegram_user)
     doctor_telegram_username = update.message.text
 
-    if delete_doctor_by_email(doctor_telegram_username) is True:
+    if delete_doctor_by_telegram_username(doctor_telegram_username) is True:
         context.bot.send_message(
             chat_id=telegram_user.id,
             text=DELETE_DOCTOR_SUCCESS_MESSAGE,
