@@ -25,7 +25,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
     telegram_user = update.effective_user
     user = find_user(telegram_user)
     if user is None:
-        logging.info(f"Didn't find a user for \"{user.telegram_username}\". Creating one...")
+        logging.info(f"Didn't find a user for \"{telegram_user.username}\". Creating one...")
         user = User(
             telegram_id=update.effective_user.id,
             telegram_username=update.effective_user.username,
