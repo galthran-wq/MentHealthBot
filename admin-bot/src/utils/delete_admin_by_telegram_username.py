@@ -9,3 +9,4 @@ def delete_admin_by_telegram_username(telegram_username: str) -> bool:
         return True
     else:
         return False
+
