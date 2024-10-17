@@ -7,7 +7,7 @@ from utils.check_state import check_state
 from states import UserStates
 from .message_templates import ADMIN_LIST_EMPTY_MESSAGE
 
-async def admin_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def admin_list(update: Update, context) -> None:
     user_id = update.effective_user.id
     logging.info(f"Admin list requested by user {user_id}")
     
