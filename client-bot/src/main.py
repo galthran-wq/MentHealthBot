@@ -8,6 +8,7 @@ from handlers import HANDLERS
 from notifications.new_appeals import new_appeals_notify
 
 def main() -> None:
+    os.makedirs("logs", exist_ok=True)
     logging.basicConfig(
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         level=logging.INFO,
@@ -37,7 +38,6 @@ def main() -> None:
     )
     logging.info("Scheduled new appeals notification job")
 
-    os.makedirs("logs", exist_ok=True)
     logging.info("Log directory created or verified")
 
     updater.start_polling()
