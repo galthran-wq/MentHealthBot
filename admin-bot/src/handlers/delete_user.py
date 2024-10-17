@@ -4,8 +4,7 @@ from utils.check_state import check_state
 from utils.update_user_state import update_user_state
 from utils.find_user_by_telegram_user import find_user_by_telegram_user
 from states import UserStates
-from ..utils.delete_user_by_telegram_username import delete_user_by_telegram_username
-
+from utils.delete_user_by_telegram_username import delete_user_by_telegram_username
 DELETE_USER_MESSAGE = "Пожалуйста, введите имя пользователя Telegram пользователя, которого вы хотите удалить."
 DELETE_USER_SUCCESS_MESSAGE = "Пользователь успешно удален."
 DELETE_USER_ERROR_MESSAGE = "Ошибка: Пользователь не найден или не может быть удален."
