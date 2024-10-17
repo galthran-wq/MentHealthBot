@@ -44,7 +44,7 @@ def user_select_problem(update: Update, context: CallbackContext):
     update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, ["Authorization",
+    check_state(user.state, [UserStates.AUTHORIZE_STATE,
                              UserStates.FINISH_CONVERSATION_STATE])
 
     delete_previous_appeals(update, context)

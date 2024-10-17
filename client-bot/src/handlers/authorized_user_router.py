@@ -31,7 +31,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
         user = User(
             telegram_id=update.effective_user.id,
             telegram_username=update.effective_user.username,
-            state="Authorization"
+            state=UserStates.AUTHORIZE_STATE
         )
         user.save()
         logging.info(f"Created User(id={user.id}, username={user.telegram_username}, id={user.telegram_id}, state={user.state})")
