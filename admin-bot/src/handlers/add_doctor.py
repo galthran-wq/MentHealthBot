@@ -44,10 +44,9 @@ def add_doctor(update: Update, context: CallbackContext):
             chat_id=telegram_user.id,
             text=ADD_DOCTOR_ERROR_MESSAGE,
         )
-        return
     else:
         context.bot.send_message(
             chat_id=telegram_user.id,
             text=ADD_DOCTOR_SUCCESS_MESSAGE,
         )
-        update_user_state(user, UserStates.AUTHORIZED_ADMIN_STATE)
+    update_user_state(user, UserStates.AUTHORIZED_ADMIN_STATE)

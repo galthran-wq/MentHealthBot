@@ -46,4 +46,4 @@ def add_admin(update: Update, context: CallbackContext):
             chat_id=telegram_user.id,
             text=ADD_ADMIN_SUCCESS_MESSAGE,
         )
-        update_user_state(user, UserStates.AUTHORIZED_ADMIN_STATE)
+    update_user_state(user, UserStates.AUTHORIZED_ADMIN_STATE)
