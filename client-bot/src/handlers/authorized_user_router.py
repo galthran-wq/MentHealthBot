@@ -42,7 +42,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
 
         callback_query = "doctor_menu_button"
         message = WELCOME_DOCTOR_MESSAGE.format(
-            user.first_name, user.last_name
+            user.telegram_username
         )
         next_button = InlineKeyboardButton(
             text="В главное меню",
