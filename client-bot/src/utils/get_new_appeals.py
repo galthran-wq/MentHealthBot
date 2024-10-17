@@ -6,8 +6,8 @@ def get_new_appeals() -> list[(str, int)]:
     if db_strings:
         new_appeals = []
         for appeal in db_strings:
-            user = User.get_by_id(appeal.patient_id)
+            user: User = User.get_by_id(appeal.patient_id)
             conn = connection_types.CONNECTION_TYPES[appeal.connection_type]
-            new_appeals.append((f"{user.first_name} {user.last_name}, {conn}", appeal.id))
+            new_appeals.append((f"{user.telegram_username}, {conn}", appeal.id))
         return new_appeals
     return []
