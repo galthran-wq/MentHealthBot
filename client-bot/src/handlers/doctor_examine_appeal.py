@@ -1,3 +1,4 @@
+import logging
 from re import search
 from models.connection_types import CONNECTION_TYPES
 from models.languages import LANGUAGES
@@ -47,7 +48,7 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     patient = find_user_by_id(appeal.patient_id)
 
     kb = make_keyboard(appeal)
-    name = " ".join([patient.first_name, patient.last_name])
+    name = patient.telegram_username
     problems = make_problems_list(appeal.problems)
     try:
         conn_type = CONNECTION_TYPES[appeal.connection_type]
@@ -58,6 +59,8 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     except KeyError:
         lang = "язык не указан"
 
+    logging.info(f"User(id={user.id}, telegram_id={telegram_user.id}) is examining appeal(id={appeal.id}, patient={patient.telegram_username})")
+
     context.bot.send_message(
         chat_id=telegram_user.id,
         text=MESSAGE.format(name, problems, conn_type, lang),
@@ -66,3 +69,4 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
     )
     
     update_user_state(user, UserStates.EXAMINE_APPEAL_STATE)
+    logging.info(f"User(id={user.id}, telegram_id={telegram_user.id}) state updated to {UserStates.EXAMINE_APPEAL_STATE}")

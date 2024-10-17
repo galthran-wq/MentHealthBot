@@ -59,8 +59,7 @@ def doctor_take_appeal(update: Update, context: CallbackContext):
     kb = make_keyboard()
     context.bot.send_message(
         chat_id=telegram_user.id,
-        text=MESSAGE.format(patient.first_name,
-                            patient.last_name, patient.telegram_username),
+        text=MESSAGE.format(patient.telegram_username),
         parse_mode=ParseMode.HTML,
         reply_markup=kb
     )
