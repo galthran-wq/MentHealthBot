@@ -6,6 +6,8 @@ from telegram.ext import CallbackContext
 from utils.check_state import check_state
 from utils.find_user import find_user
 
+from utils.update_user_state import update_user_state
+from states import UserStates
 from models import User
 from handlers.message_templates import (WELCOME_DOCTOR_MESSAGE,
                                         WELCOME_PATIENT_MESSAGE)
@@ -37,6 +39,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
         logging.info(f"Found User(id={user.id}, username={user.telegram_username}, id={user.telegram_id}, state={user.state}, therapist={user.therapist}, admin={user.admin})")
 
     if user.therapist:
+
         callback_query = "doctor_menu_button"
         message = WELCOME_DOCTOR_MESSAGE.format(
             user.first_name, user.last_name
@@ -55,6 +58,7 @@ def authorized_user_router(update: Update, context: CallbackContext):
             text="Создать новую заявку",
             callback_data=callback_query
         )
+    update_user_state(user, UserStates.AUTHORIZE_STATE)
 
     keyboard = InlineKeyboardMarkup([[next_button]])
 

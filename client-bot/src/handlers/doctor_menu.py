@@ -8,16 +8,22 @@ from utils.get_new_appeals import get_new_appeals
 from utils.update_user_state import update_user_state
 
 
+import logging
+
 def doctor_menu(update: Update, context: CallbackContext):
     update.callback_query.answer()
     telegram_user = update.effective_user
     user = find_user(telegram_user)
-    check_state(user.state, ["Authorization",
+    logging.info(f"Doctor menu accessed by User(id={user.id}, telegram_id={telegram_user.id}, username={user.telegram_username})")
+    
+    check_state(user.state, [UserStates.AUTHORIZE_STATE,
                              UserStates.DOCTOR_MENU_STATE,
                              UserStates.SELECT_APPEAL_STATE,
                              UserStates.TAKE_APPEAL_STATE])
     new_appeals = len(get_new_appeals())
     doctor_appeals = len(find_appeals_by_doctor_id(user))
+    
+    logging.info(f"User(id={user.id}, telegram_id={telegram_user.id}): New appeals: {new_appeals}, Doctor appeals: {doctor_appeals}")
 
     buttons = [InlineKeyboardButton(
         text=f"Новые заявки ({new_appeals})",
@@ -32,3 +38,4 @@ def doctor_menu(update: Update, context: CallbackContext):
     )
     
     update_user_state(user, UserStates.DOCTOR_MENU_STATE)
+    logging.info(f"User(id={user.id}, telegram_id={telegram_user.id}) state updated to {UserStates.DOCTOR_MENU_STATE}")
