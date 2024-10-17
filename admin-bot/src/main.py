@@ -3,22 +3,35 @@ import sys
 import logging
 from decouple import config
 from telegram.ext import Updater
-from handlers import HANDLERS
+from handlers import setup_handlers
 
-if __name__ == '__main__':
+def main() -> None:
     token = config("BOT_TOKEN")
+    logging.info("Bot token loaded from configuration")
 
     updater = Updater(token=token)
     dispatcher = updater.dispatcher
-    for handler in HANDLERS:
-        dispatcher.add_handler(handler)
+    logging.info("Updater and dispatcher initialized")
+
+    setup_handlers(dispatcher)
+    logging.info("Handlers set up successfully")
 
     os.makedirs("logs", exist_ok=True)
+    logging.info("Log directory created or verified")
+
     logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         level=logging.INFO,
         handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler("./logs/log")]
     )
+    logging.info("Logging configured")
 
+    logging.info("Starting admin bot")
     updater.start_polling()
+    logging.info("Admin bot is now polling for updates")
+
+    updater.idle()
+    logging.info("Admin bot stopped")
+
+if __name__ == '__main__':
+    main()
