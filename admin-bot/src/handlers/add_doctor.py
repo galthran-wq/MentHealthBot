@@ -39,10 +39,15 @@ def add_doctor(update: Update, context: CallbackContext):
         logging.info(f"User is not found for \"{telegram_user.username}\"!")
 
     if not make_user_an_doctor_by_telegram_username(doctor_telegram_username):
-        logging.info(f"Didn't find a user for \"{doctor_telegram_username}\". Creating a random one with doctor privileges")
-        create_doctor_by_telegram_username(doctor_telegram_username)
-    context.bot.send_message(
-        chat_id=telegram_user.id,
-        text=ADD_DOCTOR_SUCCESS_MESSAGE,
-    )
-    update_user_state(user, UserStates.AUTHORIZED_ADMIN_STATE)
+        logging.info(f"Didn't find a user for \"{doctor_telegram_username}\". Sending error message.")
+        context.bot.send_message(
+            chat_id=telegram_user.id,
+            text=ADD_DOCTOR_ERROR_MESSAGE,
+        )
+        return
+    else:
+        context.bot.send_message(
+            chat_id=telegram_user.id,
+            text=ADD_DOCTOR_SUCCESS_MESSAGE,
+        )
+        update_user_state(user, UserStates.AUTHORIZED_ADMIN_STATE)
