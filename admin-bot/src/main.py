@@ -7,6 +7,12 @@ from handlers import setup_handlers
 
 def main() -> None:
     token = config("BOT_TOKEN")
+    os.makedirs("logs", exist_ok=True)
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        level=logging.INFO,
+        handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler("./logs/log")]
+    )
     logging.info("Bot token loaded from configuration")
 
     updater = Updater(token=token)
@@ -16,14 +22,8 @@ def main() -> None:
     setup_handlers(dispatcher)
     logging.info("Handlers set up successfully")
 
-    os.makedirs("logs", exist_ok=True)
     logging.info("Log directory created or verified")
 
-    logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        level=logging.INFO,
-        handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler("./logs/log")]
-    )
     logging.info("Logging configured")
 
     logging.info("Starting admin bot")
