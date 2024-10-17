@@ -10,7 +10,7 @@ def delete_user_by_telegram_username(telegram_username: str) -> bool:
             from models import Appeal
 
             # Delete all appeals for this user
-            Appeal.delete().where(Appeal.user == user_ref).execute()
+            Appeal.delete().where(Appeal.patient == user_ref).execute()
             Appeal.delete().where(Appeal.therapist == user_ref).execute()
 
             # Now delete the user
