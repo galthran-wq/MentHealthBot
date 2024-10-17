@@ -5,3 +5,4 @@ class UserStates:
     ADD_ADMIN_STATE = 'AddAdminState'
     DELETE_ADMIN_STATE = 'DeleteAdminState'
     AUTHORIZED_ADMIN_STATE = 'AuthorizedAdminState'
+    DELETE_USER_STATE = 'DeleteUserState'

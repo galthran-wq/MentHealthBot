@@ -9,9 +9,10 @@ from .admin_list import admin_list
 from .back import back
 from .help import help
 from .authorization_state import authorization_state
+from .delete_user import delete_user_start, delete_user
 from filters.state_filter import StateFilter
 from states import UserStates
-from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler
+from telegram.ext import Application, CommandHandler, MessageHandler
 
 def setup_handlers(application: Application) -> None:
     logging.info("Setting up handlers for admin bot")
@@ -29,7 +30,9 @@ def setup_handlers(application: Application) -> None:
         ("add_admin", add_admin_start, "command"),
         (UserStates.DELETE_ADMIN_STATE, delete_admin, "state"),
         ("delete_admin", delete_admin_start, "command"),
-        ("admin_list", admin_list, "command")
+        ("admin_list", admin_list, "command"),
+        ("delete_user", delete_user_start, "command"),
+        (UserStates.DELETE_USER_STATE, delete_user, "state"),
     ]
     
     for handler in handlers:
