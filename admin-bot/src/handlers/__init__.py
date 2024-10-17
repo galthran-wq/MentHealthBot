@@ -12,9 +12,9 @@ from .authorization_state import authorization_state
 from .delete_user import delete_user_start, delete_user
 from filters.state_filter import StateFilter
 from states import UserStates
-from telegram.ext import Application, CommandHandler, MessageHandler
+from telegram.ext import CommandHandler, MessageHandler
 
-def setup_handlers(application: Application) -> None:
+def setup_handlers(application) -> None:
     logging.info("Setting up handlers for admin bot")
     
     handlers = [
