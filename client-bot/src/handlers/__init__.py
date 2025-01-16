@@ -15,6 +15,7 @@ from .user_public_awaiting_approve import user_public_awaiting_approve
 from .user_select_connection import user_select_connection
 from .user_select_language import user_select_language
 from .user_select_problem import user_select_problem
+from .user_check_hse_student import ask_if_hse_student, handle_hse_student_response
 
 HANDLERS = [
     CommandHandler(
@@ -45,10 +46,10 @@ HANDLERS = [
 
     # user can reach this step with two ways: when he/she registers in the bot
     # and when he/she wants to share the problem again
-    CallbackQueryHandler(
-        user_select_problem,
-        pattern=r"^create_appeal_button$"
-    ),
+    # CallbackQueryHandler(
+    #     user_select_problem,
+    #     pattern=r"^create_appeal_button$"
+    # ),
 
     CallbackQueryHandler(
         user_change_problem,
@@ -94,5 +95,15 @@ HANDLERS = [
     CallbackQueryHandler(
         doctor_take_appeal,
         pattern=r"^take_appeal_.+_button$"
-    )
+    ),
+
+    CallbackQueryHandler(
+        ask_if_hse_student,
+        pattern=r"^create_appeal_button$"
+    ),
+
+    CallbackQueryHandler(
+        handle_hse_student_response,
+        pattern=r"^hse_student_(yes|no)$"
+    ),
 ]
