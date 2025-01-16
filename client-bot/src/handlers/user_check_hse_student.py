@@ -4,7 +4,7 @@ from .message_templates.are_you_hse_student_message import ARE_YOU_HSE_STUDENT_M
 from utils.update_user_state import update_user_state
 from utils.find_user import find_user
 from states import UserStates
-from src.handlers.user_select_problem import user_select_problem
+from handlers.user_select_problem import user_select_problem
 
 def ask_if_hse_student(update: Update, context: CallbackContext):
     buttons = [
