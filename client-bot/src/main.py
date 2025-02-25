@@ -33,7 +33,7 @@ def main() -> None:
 
     job_queue.run_repeating(
         new_appeals_notify,
-        timedelta(hours=12),
+        timedelta(hours=24),
         time(hour=8-3)  # -3 because of Moscow timezone UTC+3
     )
     logging.info("Scheduled new appeals notification job")

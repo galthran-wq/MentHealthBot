@@ -60,13 +60,17 @@ def doctor_examine_appeal(update: Update, context: CallbackContext):
         lang = "язык не указан"
 
     logging.info(f"User(id={user.id}, telegram_id={telegram_user.id}) is examining appeal(id={appeal.id}, patient={patient.telegram_username})")
-
-    context.bot.send_message(
-        chat_id=telegram_user.id,
-        text=MESSAGE.format(name, problems, conn_type, lang),
-        parse_mode=ParseMode.MARKDOWN,
-        reply_markup=kb
-    )
     
+
+    try:
+        context.bot.send_message(
+            chat_id=telegram_user.id,
+            text=MESSAGE.format(name, problems, conn_type, lang),
+            reply_markup=kb
+        )
+    except Exception as e:
+        logging.error(f"User(id={user.id}, telegram_id={telegram_user.id}) error: {str(e)}")
+        pass
+
     update_user_state(user, UserStates.EXAMINE_APPEAL_STATE)
     logging.info(f"User(id={user.id}, telegram_id={telegram_user.id}) state updated to {UserStates.EXAMINE_APPEAL_STATE}")
